@@ -1,9 +1,11 @@
 package chessboard;
 
+import chessboard.pieces.*;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -17,13 +19,14 @@ public class Main extends Application {
     public static final double width = 600;
     public static final double height = 600;
     public static final String title = "chess.iek";
+    public static final String iconFilename = "assets/images/piece.png";
     public static final int rows = 8;
     public static final int columns = 8;
 
     private Stage stage;
     private Parent root;
     private Scene scene;
-    private Vector<Figure> figures;
+    private Vector<Piece> pieces;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,6 +37,7 @@ public class Main extends Application {
         this.stage = stage;
         stage.setTitle(title);
         stage.setResizable(false);
+        stage.getIcons().add(new Image(iconFilename));
         initChessboard();
         draw();
         stage.show();
@@ -67,23 +71,23 @@ public class Main extends Application {
         double widthPercentage = 1.0 / 6;
         double heightPercentage = 1.0 / 2;
         int factor = 0;
-        for(Figure figure : figures){
+        for(Piece piece : pieces){
             double xPositionPercentage = 1.0 / 6;
             double yPositionPercentage = 0;
-            if(figure.getColor() == Figure.Colors.BLACK){
+            if(piece.getColor() == Piece.Colors.BLACK){
                 yPositionPercentage = 1.0 / 2;
             }
-            if(figure instanceof King){
+            if(piece instanceof King){
                 factor = 0;
-            }else if(figure instanceof Queen){
+            }else if(piece instanceof Queen){
                 factor = 1;
-            }else if(figure instanceof Bishop){
+            }else if(piece instanceof Bishop){
                 factor = 2;
-            }else if(figure instanceof Knight){
+            }else if(piece instanceof Knight){
                 factor = 3;
-            }else if(figure instanceof Rook){
+            }else if(piece instanceof Rook){
                 factor = 4;
-            }else if(figure instanceof Pawn){
+            }else if(piece instanceof Pawn){
                 factor = 5;
             }
             xPositionPercentage *= factor;
@@ -93,38 +97,38 @@ public class Main extends Application {
             double figureHeight = height / rows;
             imageView.setFitWidth(figureWidth);
             imageView.setFitHeight(figureHeight);
-            imageView.setX(figure.getColumn() * figureWidth);
-            imageView.setY(figure.getRow() * figureHeight);
+            imageView.setX(piece.getColumn() * figureWidth);
+            imageView.setY(piece.getRow() * figureHeight);
             ((Group) root).getChildren().add(imageView);
         }
     }
 
     public void initChessboard(){
-        figures = new Vector<>();
-        figures.add(new Rook(0, 0, Figure.Colors.BLACK));
-        figures.add(new Knight(0, 1, Figure.Colors.BLACK));
-        figures.add(new Bishop(0, 2, Figure.Colors.BLACK));
-        figures.add(new Queen(0, 3, Figure.Colors.BLACK));
-        figures.add(new King(0, 4, Figure.Colors.BLACK));
-        figures.add(new Bishop(0, 5, Figure.Colors.BLACK));
-        figures.add(new Knight(0, 6, Figure.Colors.BLACK));
-        figures.add(new Rook(0, 7, Figure.Colors.BLACK));
+        pieces = new Vector<>();
+        pieces.add(new Rook(0, 0, Piece.Colors.BLACK));
+        pieces.add(new Knight(0, 1, Piece.Colors.BLACK));
+        pieces.add(new Bishop(0, 2, Piece.Colors.BLACK));
+        pieces.add(new Queen(0, 3, Piece.Colors.BLACK));
+        pieces.add(new King(0, 4, Piece.Colors.BLACK));
+        pieces.add(new Bishop(0, 5, Piece.Colors.BLACK));
+        pieces.add(new Knight(0, 6, Piece.Colors.BLACK));
+        pieces.add(new Rook(0, 7, Piece.Colors.BLACK));
 
         for(int i = 0; i < columns; i++){
-            figures.add(new Pawn(1, i, Figure.Colors.BLACK));
+            pieces.add(new Pawn(1, i, Piece.Colors.BLACK));
         }
 
-        figures.add(new Rook(rows - 1, 0, Figure.Colors.WHITE));
-        figures.add(new Knight(rows - 1, 1, Figure.Colors.WHITE));
-        figures.add(new Bishop(rows - 1, 2, Figure.Colors.WHITE));
-        figures.add(new Queen(rows - 1, 3, Figure.Colors.WHITE));
-        figures.add(new King(rows - 1, 4, Figure.Colors.WHITE));
-        figures.add(new Bishop(rows - 1, 5, Figure.Colors.WHITE));
-        figures.add(new Knight(rows - 1, 6, Figure.Colors.WHITE));
-        figures.add(new Rook(rows - 1, 7, Figure.Colors.WHITE));
+        pieces.add(new Rook(rows - 1, 0, Piece.Colors.WHITE));
+        pieces.add(new Knight(rows - 1, 1, Piece.Colors.WHITE));
+        pieces.add(new Bishop(rows - 1, 2, Piece.Colors.WHITE));
+        pieces.add(new Queen(rows - 1, 3, Piece.Colors.WHITE));
+        pieces.add(new King(rows - 1, 4, Piece.Colors.WHITE));
+        pieces.add(new Bishop(rows - 1, 5, Piece.Colors.WHITE));
+        pieces.add(new Knight(rows - 1, 6, Piece.Colors.WHITE));
+        pieces.add(new Rook(rows - 1, 7, Piece.Colors.WHITE));
 
         for(int i = 0; i < columns; i++){
-            figures.add(new Pawn(rows - 2, i, Figure.Colors.WHITE));
+            pieces.add(new Pawn(rows - 2, i, Piece.Colors.WHITE));
         }
     }
 

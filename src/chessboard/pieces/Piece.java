@@ -1,6 +1,6 @@
-package chessboard;
+package chessboard.pieces;
 
-public abstract class Figure {
+public abstract class Piece {
 
     public enum Colors{
         WHITE,
@@ -15,7 +15,7 @@ public abstract class Figure {
     private Colors color;
 
 
-    public Figure(int row, int column, String name, String filename, double power, Colors color) {
+    public Piece(int row, int column, String name, String filename, double power, Colors color) {
         this.row = row;
         this.column = column;
         this.name = name;
