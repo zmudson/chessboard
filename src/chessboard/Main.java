@@ -3,6 +3,7 @@ package chessboard;
 import chessboard.pieces.*;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import utils.EventHandler;
 import utils.ImageGenerator;
 
 import java.util.Vector;
@@ -27,6 +29,8 @@ public class Main extends Application {
     private Parent root;
     private Scene scene;
     private Vector<Piece> pieces;
+    private Node[][] rectangles;
+    private EventHandler eventHandler;
 
     public static void main(String[] args) {
         launch(args);
@@ -39,8 +43,14 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.getIcons().add(new Image(iconFilename));
         initChessboard();
+
+        rectangles = new Node[rows][columns];
+
         draw();
         stage.show();
+        // init handler events
+        initHandlerEvents();
+
     }
 
     public void draw(){
@@ -49,6 +59,7 @@ public class Main extends Application {
         stage.setScene(scene);
         generateChessboard();
         fillChessboard();
+
     }
 
     public void generateChessboard(){
@@ -63,6 +74,8 @@ public class Main extends Application {
                 rectangle.setX(x);
                 rectangle.setY(y);
                 ((Group) root).getChildren().add(rectangle);
+                //add rectangles to array
+                rectangles[row][column] = rectangle;
             }
         }
     }
@@ -130,6 +143,12 @@ public class Main extends Application {
         for(int i = 0; i < columns; i++){
             pieces.add(new Pawn(rows - 2, i, Piece.Colors.WHITE));
         }
+    }
+
+    private void initHandlerEvents() {
+
+        eventHandler = new EventHandler(columns, rows);
+        eventHandler.setUpRectangleEvents(rectangles);
     }
 
 }
