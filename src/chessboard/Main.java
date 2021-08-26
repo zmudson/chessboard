@@ -45,8 +45,6 @@ public class Main extends Application {
         stage.setScene(scene);
         generateChessboard();
         fillChessboard();
-//        ImageView imageView = ImageGenerator.getImagePart("Assets/pieces.svg.png", 0, 0, 1.0 / 6, 0.5);
-//        ((Group)root).getChildren().add(imageView);
     }
 
     public void generateChessboard(){
@@ -100,10 +98,6 @@ public class Main extends Application {
             ((Group) root).getChildren().add(imageView);
         }
     }
-
-//    public void drawFigure(double xPositionPercentage, double yPositionPercentage, double widthPercentage, double heightPercentage){
-//
-//    }
 
     public void initChessboard(){
         figures = new Vector<>();
