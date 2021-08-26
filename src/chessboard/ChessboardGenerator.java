@@ -140,12 +140,12 @@ public class ChessboardGenerator {
         return pieces;
     }
 
-    public Piece getPiece(int column, int row) throws Exception {
-        for(int i=0; i<pieces.size(); i++) {
-            if(pieces.get(i).getRow()==row && pieces.get(i).getColumn()==column) {
-                return pieces.get(i);
+    public Piece getPiece(int column, int row) {
+        for (Piece piece : pieces) {
+            if (piece.getRow() == row && piece.getColumn() == column) {
+                return piece;
             }
         }
-        throw new Exception("No piece has been found at ["+row+"]["+column+"]!");
+        return null;
     }
 }
