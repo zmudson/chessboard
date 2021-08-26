@@ -5,9 +5,10 @@ import javafx.scene.input.MouseEvent;
 
 public class EventHandler {
 
-    public static Node clickedRectangle;
+    public static Node clickedField;
 
-    private int columns, rows;
+    private final int columns;
+    private final int rows;
 
     public EventHandler(int columns, int rows) {
         this.columns = columns;
@@ -15,17 +16,15 @@ public class EventHandler {
     }
 
     public void setUpRectangleEvents(Node[][] rectangles) {
-        for(int i=0; i<columns; i++) {
-            for(int j=0; j<rows; j++) {
+        for(int i = 0; i < columns; i++) {
+            for(int j = 0; j < rows; j++) {
                 final int row = i;
                 final int column = j;
                 rectangles[j][i].setOnMousePressed(new javafx.event.EventHandler<MouseEvent>() {
-
                     @Override
                     public void handle(MouseEvent event) {
-                        clickedRectangle = rectangles[row][column];
-
-                        System.out.println("Kliknięto: ["+row+"]["+column+"]");
+                        clickedField = rectangles[row][column];
+                        System.out.println("Kliknięto: [" + row + "][" + column + "]");
                     }
                 });
             }
