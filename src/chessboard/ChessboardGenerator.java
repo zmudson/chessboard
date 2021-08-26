@@ -13,6 +13,9 @@ import java.util.Vector;
 
 public class ChessboardGenerator {
 
+    public static Color CHESSBOARD_WHITE_COLOR = Color.web("#F0D9B5");
+    public static Color CHESSBOARD_BLACK_COLOR = Color.web("#B58863");
+
     private final double width;
     private final double height;
     private final int rows;
@@ -37,7 +40,7 @@ public class ChessboardGenerator {
         double rectangleHeight = height / rows;
         for(int row = 0; row < rows; row++){
             for(int column = 0; column < columns; column++){
-                Color color = (row + column) % 2 == 0 ? Color.web("#F0D9B5") : Color.web("#B58863");
+                Color color = (row + column) % 2 == 0 ? CHESSBOARD_WHITE_COLOR : CHESSBOARD_BLACK_COLOR;
                 double x = rectangleWidth * column;
                 double y = rectangleHeight * row;
                 Rectangle rectangle = new Rectangle(rectangleWidth, rectangleHeight, color);
@@ -121,5 +124,28 @@ public class ChessboardGenerator {
 
     public Node[][] getRectangles() {
         return rectangles;
+    }
+
+    public void colorField(int row, int col, Color color) {
+        Rectangle rect = (Rectangle) rectangles[row][col];
+        rect.setFill(color);
+    }
+
+    public void colorField(Node rectangle, Color color) {
+        Rectangle rect = (Rectangle) rectangle;
+        rect.setFill(color);
+    }
+
+    public Vector<Piece> getPieces() {
+        return pieces;
+    }
+
+    public Piece getPiece(int column, int row) throws Exception {
+        for(int i=0; i<pieces.size(); i++) {
+            if(pieces.get(i).getRow()==row && pieces.get(i).getColumn()==column) {
+                return pieces.get(i);
+            }
+        }
+        throw new Exception("No piece has been found at ["+row+"]["+column+"]!");
     }
 }
