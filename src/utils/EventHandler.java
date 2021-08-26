@@ -21,6 +21,9 @@ public class EventHandler {
     private Rectangle lastClicked;
     private Color lastColor;
 
+    private boolean focusedOnPiece = false;
+    private Piece currentPiece = null;
+
     private ChessboardGenerator chessboardGenerator;
 
     public EventHandler(int columns, int rows, ChessboardGenerator chessboardGenerator) {
@@ -41,24 +44,26 @@ public class EventHandler {
 
                         //check if it is possile to color rectangle
                         //color only rectangles with pieces on it
-                        Piece piece;
-                        try {
+                        if(!focusedOnPiece) {
+                            Piece piece;
                             piece = chessboardGenerator.getPiece(row, column);
+                            if (piece != null) {
+                                System.out.println(piece.getName());
 
-                            System.out.println(piece.getName());
+                                // focus on piece
+                                focusedOnPiece = true;
+                                currentPiece = piece;
 
-                            //uncolor last piece
-                            if(lastClicked !=null) chessboardGenerator.colorField(lastClicked, lastColor);
-
-                            lastClicked = (Rectangle) clickedField;
-                            lastColor = (Color)lastClicked.getFill();
-
-                            chessboardGenerator.colorField(column,row,CLICKED_COLOR);
-                        }
-                        catch (Exception e) {
-                            //e.printStackTrace();
-                            clickedField = null;
-                            return;
+                                //uncolor last piece
+                                if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
+                                lastClicked = (Rectangle) clickedField;
+                                lastColor = (Color) lastClicked.getFill();
+                                chessboardGenerator.colorField(column, row, CLICKED_COLOR);
+                            }
+                        }else{
+                            currentPiece.move(column, row);
+                            currentPiece = null;
+                            focusedOnPiece = false;
                         }
                     }
                 });

@@ -27,6 +27,15 @@ public abstract class Piece {
         this.color = color;
     }
 
+    public void move(int row, int column){
+        this.row = row;
+        this.column = column;
+        int x = (int)(image.getFitWidth() * column);
+        int y = (int)(image.getFitHeight() * row);
+        image.setX(x);
+        image.setY(y);
+    }
+
     public int getRow() {
         return row;
     }
