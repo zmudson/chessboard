@@ -4,6 +4,8 @@ import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 
 public class ImageGenerator {
+
+    // return imageView with indicated part of an image
     public static ImageView getImagePart(String filename, double xPositionPercentage, double yPositionPercentage, double widthPercentage, double heightPercentage) {
         Image image = new Image(filename);
         double currentWidth = image.getWidth();
@@ -13,26 +15,26 @@ public class ImageGenerator {
         int xDelta = (int)(currentWidth * xPositionPercentage);
         int yDelta = (int)(currentHeight * yPositionPercentage);
 
-        //Creating a writable image
+        // creating a writable image
         WritableImage writableImage = new WritableImage(newWidth, newHeight);
 
-        //Reading color from the loaded image
+        // reading color from the loaded image
         PixelReader pixelReader = image.getPixelReader();
 
-        //getting the pixel writer
+        // getting the pixel writer
         PixelWriter writer = writableImage.getPixelWriter();
 
-        //Reading the color of the image
+        //r eading the color of the image pixel by pixel
         for(int y = 0; y < newHeight; y++) {
             for(int x = 0; x < newWidth; x++) {
-                //Retrieving the color of the pixel of the loaded image
+                //retrieving the color of the pixel of the loaded image
                 Color color = pixelReader.getColor(x + xDelta, y + yDelta);
 
-                //Setting the color to the writable image
+                // setting the color to the writable image
                 writer.setColor(x, y, color);
             }
         }
-        //Setting the view for the writable image
+        // setting the view for the writable image
         return new ImageView(writableImage);
     }
 }
