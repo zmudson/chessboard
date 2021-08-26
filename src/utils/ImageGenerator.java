@@ -3,9 +3,6 @@ package utils;
 import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 public class ImageGenerator {
     public static ImageView getImagePart(String filename, double xPositionPercentage, double yPositionPercentage, double widthPercentage, double heightPercentage) {
         Image image = new Image(filename);
@@ -15,6 +12,7 @@ public class ImageGenerator {
         int newHeight = (int)(currentHeight * heightPercentage);
         int xDelta = (int)(currentWidth * xPositionPercentage);
         int yDelta = (int)(currentHeight * yPositionPercentage);
+
         //Creating a writable image
         WritableImage writableImage = new WritableImage(newWidth, newHeight);
 
