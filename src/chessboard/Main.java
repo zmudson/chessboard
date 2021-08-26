@@ -112,7 +112,11 @@ public class Main extends Application {
             imageView.setFitHeight(figureHeight);
             imageView.setX(piece.getColumn() * figureWidth);
             imageView.setY(piece.getRow() * figureHeight);
+            //for eventhandler
+            imageView.setMouseTransparent(true);
             ((Group) root).getChildren().add(imageView);
+
+
         }
     }
 
