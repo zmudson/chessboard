@@ -82,11 +82,11 @@ public class ChessboardGenerator {
             imageView.setFitHeight(figureHeight);
             imageView.setX(piece.getColumn() * figureWidth);
             imageView.setY(piece.getRow() * figureHeight);
+            piece.setImage(imageView);
             //for eventhandler
             imageView.setMouseTransparent(true);
+
             ((Group) root).getChildren().add(imageView);
-
-
         }
     }
 
