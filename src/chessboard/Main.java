@@ -42,14 +42,14 @@ public class Main extends Application {
 
         chessboardGenerator = new ChessboardGenerator(width,height,rows,columns,root, pieces);
 
-        init();
+        initialize();
         stage.show();
         // init handler events
         initHandlerEvents();
 
     }
 
-    public void init(){
+    public void initialize(){
         this.scene = new Scene(root, width, height);
         stage.setScene(scene);
         chessboardGenerator.initChessboard();
