@@ -1,5 +1,7 @@
 package chessboard.pieces;
 
+import javafx.scene.image.ImageView;
+
 public abstract class Piece {
 
     public enum Colors{
@@ -13,6 +15,7 @@ public abstract class Piece {
     private String filename;
     private double power;
     private Colors color;
+    private ImageView image;
 
 
     public Piece(int row, int column, String name, String filename, double power, Colors color) {
@@ -26,6 +29,14 @@ public abstract class Piece {
 
     public int getRow() {
         return row;
+    }
+
+    public ImageView getImage() {
+        return image;
+    }
+
+    public void setImage(ImageView image) {
+        this.image = image;
     }
 
     public void setRow(int row) {

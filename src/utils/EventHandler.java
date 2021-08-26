@@ -7,6 +7,7 @@ public class EventHandler {
 
     public static Node clickedField;
 
+    // can change to rectangles.length and rectangles[i].length
     private final int columns;
     private final int rows;
 
