@@ -52,7 +52,6 @@ public class Main extends Application {
         stage.show();
         // init handler events
         initHandlerEvents();
-
     }
 
     public void draw(){
@@ -60,12 +59,10 @@ public class Main extends Application {
         stage.setScene(scene);
         chessboardGenerator.generateChessboard();
         chessboardGenerator.fillChessboard();
-
     }
 
     private void initHandlerEvents() {
-        eventHandler = new EventHandler(columns, rows);
+        eventHandler = new EventHandler(columns, rows, chessboardGenerator);
         eventHandler.setUpRectangleEvents(chessboardGenerator.getRectangles());
     }
-
 }
