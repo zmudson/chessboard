@@ -44,6 +44,10 @@ public abstract class Piece {
         image.setY(y);
     }
 
+    public Position getPosition(){
+        return new Position(row, column);
+    }
+
     public int getRow() {
         return row;
     }
