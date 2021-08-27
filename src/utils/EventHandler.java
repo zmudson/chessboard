@@ -50,16 +50,20 @@ public class EventHandler {
                         clickedField = rectangles[column][row];
 
                         if(!focusedOnPiece) {
-                            Piece piece = chessboardGenerator.getPiece(row, column);
+                            Piece piece;
+                            piece = chessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
 
                             //check if it is possile to color rectangle
                             //color only rectangles with pieces on it
+
                             if (piece != null) {
                                 System.out.println(piece.getName());
 
                                 // focus on piece
                                 focusedOnPiece = true;
                                 currentPiece = piece;
+
+                                //get available moves
 
                                 //uncolor last piece
                                 if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);

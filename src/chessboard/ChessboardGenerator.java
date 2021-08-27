@@ -149,7 +149,7 @@ public class ChessboardGenerator {
     }
 
     // return piece on provided position if it is on it, otherwise return null
-    public Piece getPiece(int column, int row) {
+    public static Piece getPiece(int column, int row, Vector<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 return piece;
