@@ -134,8 +134,8 @@ public class ChessboardGenerator {
         return rectangles;
     }
 
-    public void colorField(int row, int col, Color color) {
-        Rectangle rect = (Rectangle) rectangles[row][col];
+    public void colorField(int row, int column, Color color) {
+        Rectangle rect = (Rectangle) rectangles[row][column];
         rect.setFill(color);
     }
 
@@ -149,7 +149,7 @@ public class ChessboardGenerator {
     }
 
     // return piece on provided position if it is on it, otherwise return null
-    public static Piece getPiece(int column, int row, Vector<Piece> pieces) {
+    public static Piece getPiece(int row, int column, Vector<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 return piece;

@@ -43,14 +43,14 @@ public class EventHandler {
 
     // setup fields events
     public void setUpRectangleEvents(Node[][] rectangles) {
-        for(int i = 0; i < columns; i++) {
-            for(int j = 0; j < rows; j++) {
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < columns; j++) {
                 final int row = i;
                 final int column = j;
-                rectangles[j][i].setOnMousePressed(new javafx.event.EventHandler<MouseEvent>() {
+                rectangles[i][j].setOnMousePressed(new javafx.event.EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        clickedField = rectangles[column][row];
+                        clickedField = rectangles[row][column];
 
                         if(!focusedOnPiece) {
                             Piece piece;
@@ -71,7 +71,6 @@ public class EventHandler {
                                 for(Position pos : positions) {
                                     Rectangle rect = (Rectangle) rectangles[pos.getRow()][pos.getColumn()];
                                     rect.setFill(AVAILABLE_MOVE_COLOR);
-                                    System.out.println(pos.getColumn());
                                 }
 
 
@@ -79,11 +78,11 @@ public class EventHandler {
                                 if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
                                 lastClicked = (Rectangle) clickedField;
                                 lastColor = (Color) lastClicked.getFill();
-                                chessboardGenerator.colorField(column, row, CLICKED_COLOR);
+                                chessboardGenerator.colorField(row, column, CLICKED_COLOR);
                             }
                         }else{
                             // handling piece move
-                            currentPiece.move(column, row);
+                            currentPiece.move(row, column);
                             currentPiece = null;
                             focusedOnPiece = false;
                         }
