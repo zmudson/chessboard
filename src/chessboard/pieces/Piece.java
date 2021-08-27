@@ -1,6 +1,10 @@
 package chessboard.pieces;
 
 import javafx.scene.image.ImageView;
+import utils.Position;
+
+import java.util.List;
+import java.util.Vector;
 
 public abstract class Piece {
 
@@ -26,6 +30,9 @@ public abstract class Piece {
         this.power = power;
         this.color = color;
     }
+
+    // get all pseudolegal moves
+    public abstract List<Position> getPossibleMoves(Vector<Piece> pieces);
 
     // move piece on different field and update his image position
     public void move(int row, int column){
