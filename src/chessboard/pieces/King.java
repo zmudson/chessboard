@@ -2,6 +2,7 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class King extends Piece {
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
                 Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
-                if(!(piece != null && (piece.getColor() == color || piece instanceof King))) {
+                if(MoveHandler.isValid(this, piece)) {
                     possibleMoves.add(new Position(row, column));
                 }
             }
