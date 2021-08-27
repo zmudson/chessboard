@@ -1,6 +1,7 @@
 package chessboard.pieces;
 
 import javafx.scene.image.ImageView;
+import utils.MoveHandler;
 import utils.Position;
 
 import java.util.List;
@@ -43,6 +44,18 @@ public abstract class Piece {
         image.setX(x);
         image.setY(y);
     }
+
+    // add move to possible moves array and return true if next position is available or false otherwise
+    protected boolean getPossibleMove(int row, int column, List<Position> possibleMoves, Piece piece){
+        boolean isNext = false;
+        if(MoveHandler.isValid(this, piece)){
+            possibleMoves.add(new Position(row, column));
+            if(piece == null)
+                isNext = true;
+        }
+        return isNext;
+    }
+
 
     public Position getPosition(){
         return new Position(row, column);

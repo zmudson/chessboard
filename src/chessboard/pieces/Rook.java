@@ -18,17 +18,6 @@ public class Rook extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    // add move to possible moves array and return true if next position is available or false otherwise
-    private boolean getPossibleMove(int row, int column, List<Position> possibleMoves, Piece piece){
-        boolean isNext = false;
-        if(MoveHandler.isValid(this, piece)){
-            possibleMoves.add(new Position(row, column));
-            if(piece == null)
-                isNext = true;
-        }
-        return isNext;
-    }
-
     public List<Position> getPossibleMoves(Vector<Piece> pieces){
         /* TODO */
         // castling
