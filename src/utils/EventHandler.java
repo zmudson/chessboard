@@ -7,6 +7,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.List;
+import java.util.Vector;
+
 public class EventHandler {
 
     // focused field color
@@ -39,7 +42,7 @@ public class EventHandler {
     }
 
     // setup fields events
-    public void setUpRectangleEvents(Node[][] rectangles) {
+    public void setUpRectangleEvents(Node[][] rectangles, Vector<Piece> pieces) {
         for(int i = 0; i < columns; i++) {
             for(int j = 0; j < rows; j++) {
                 final int row = i;
@@ -64,6 +67,8 @@ public class EventHandler {
                                 currentPiece = piece;
 
                                 //get available moves
+                                //List<Position> positions = piece.getPossibleMoves(pieces);
+
 
                                 //uncolor last piece
                                 if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);

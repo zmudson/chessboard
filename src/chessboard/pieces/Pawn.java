@@ -26,7 +26,7 @@ public class Pawn extends Piece {
         //possible moves for pawn:
         // up, beating and en passant
 
-        //TODO dokończyć
+        //TODO dokończyć bicie w przelocie oraz pokomentować
 
         Piece frontPiece = ChessboardGenerator.getPiece(row, column+direction, pieces);
         Piece leftPiece = ChessboardGenerator.getPiece(row-1, column, pieces);
