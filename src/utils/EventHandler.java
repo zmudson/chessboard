@@ -69,7 +69,7 @@ public class EventHandler {
                                 //get and show available moves
                                 List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
                                 for(Position pos : positions) {
-                                    Rectangle rect = (Rectangle) rectangles[pos.getColumn()][pos.getRow()];
+                                    Rectangle rect = (Rectangle) rectangles[pos.getRow()][pos.getColumn()];
                                     rect.setFill(AVAILABLE_MOVE_COLOR);
                                     System.out.println(pos.getColumn());
                                 }

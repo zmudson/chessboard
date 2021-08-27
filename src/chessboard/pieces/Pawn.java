@@ -17,7 +17,7 @@ public class Pawn extends Piece {
     public Pawn(int row, int column, Piece.Colors color) {
         super(row, column, name, filename, power, color);
         //if color is white direction is to go up
-        direction = color == Colors.WHITE ? 1 : -1;
+        direction = color == Colors.WHITE ? -1 : 1;
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces) {
@@ -36,14 +36,14 @@ public class Pawn extends Piece {
 
         if(frontPiece==null)
         {
-            positions.add(new Position(row, column+direction));
+            positions.add(new Position(row+direction, column));
         }
-        if(leftPiece!=null && leftFrontPiece==null) {
+       /* if(leftPiece!=null && leftFrontPiece==null) {
             if (leftPiece.getColor()!=color) positions.add(new Position(row-1, column+direction));
         }
         if(rightPiece!=null && rightFrontPiece==null) {
             if (rightPiece.getColor()!=color) positions.add(new Position(row+1, column+direction));
-        }
+        }*/
         //if(rightFrontPiece!=null)
         System.out.println("Obliczono "+positions.size()+" pozycji");
         return positions;
