@@ -140,7 +140,7 @@ public class ChessboardGenerator {
         return pieces;
     }
 
-    public Piece getPiece(int column, int row) {
+    public static Piece getPiece(int column, int row, Vector<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 return piece;

@@ -9,12 +9,12 @@ public abstract class Piece {
         BLACK
     };
 
-    private int row;
-    private int column;
+    protected int row;
+    protected int column;
     private String name;
     private String filename;
     private double power;
-    private Colors color;
+    protected Colors color;
     private ImageView image;
 
 

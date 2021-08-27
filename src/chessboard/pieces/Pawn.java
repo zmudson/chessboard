@@ -1,5 +1,6 @@
 package chessboard.pieces;
 
+import chessboard.ChessboardGenerator;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -23,8 +24,27 @@ public class Pawn extends Piece {
         List<Position> positions = new ArrayList<>();
         //check positions
         //possible moves for pawn:
-        // up and en passant
+        // up, beating and en passant
 
+        //TODO dokończyć
+
+        Piece frontPiece = ChessboardGenerator.getPiece(row, column+direction, pieces);
+        Piece leftPiece = ChessboardGenerator.getPiece(row-1, column, pieces);
+        Piece rightPiece = ChessboardGenerator.getPiece(row+1, column, pieces);
+        Piece rightFrontPiece = ChessboardGenerator.getPiece(row+1, column+direction, pieces);
+        Piece leftFrontPiece = ChessboardGenerator.getPiece(row-1, column+direction, pieces);
+
+        if(frontPiece==null)
+        {
+            positions.add(new Position(row, column+direction));
+        }
+        if(leftPiece!=null && leftFrontPiece==null) {
+            if (leftPiece.getColor()!=color) positions.add(new Position(row-1, column+direction));
+        }
+        if(rightPiece!=null && rightFrontPiece==null) {
+            if (rightPiece.getColor()!=color) positions.add(new Position(row+1, column+direction));
+        }
+        //if(rightFrontPiece!=null)
 
         return positions;
     }
