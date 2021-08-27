@@ -8,12 +8,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
-import java.util.Vector;
 
 public class EventHandler {
 
     // focused field color
     public static Color CLICKED_COLOR = Color.web("#f7d64f");
+    public static Color AVAILABLE_MOVE_COLOR = Color.web("#b4d64f");
 
     public static Node clickedField;
 
@@ -42,7 +42,7 @@ public class EventHandler {
     }
 
     // setup fields events
-    public void setUpRectangleEvents(Node[][] rectangles, Vector<Piece> pieces) {
+    public void setUpRectangleEvents(Node[][] rectangles) {
         for(int i = 0; i < columns; i++) {
             for(int j = 0; j < rows; j++) {
                 final int row = i;
@@ -66,8 +66,13 @@ public class EventHandler {
                                 focusedOnPiece = true;
                                 currentPiece = piece;
 
-                                //get available moves
-                                //List<Position> positions = piece.getPossibleMoves(pieces);
+                                //get and show available moves
+                                List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
+                                for(Position pos : positions) {
+                                    Rectangle rect = (Rectangle) rectangles[pos.getColumn()][pos.getRow()];
+                                    rect.setFill(AVAILABLE_MOVE_COLOR);
+                                    System.out.println(pos.getColumn());
+                                }
 
 
                                 //uncolor last piece

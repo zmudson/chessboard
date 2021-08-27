@@ -25,13 +25,13 @@ public class ChessboardGenerator {
     private Node[][] rectangles;
     private Vector<Piece> pieces;
 
-    public ChessboardGenerator(double width, double height, int rows, int columns, Parent root, Vector<Piece> pieces) {
+    public ChessboardGenerator(double width, double height, int rows, int columns, Parent root) {
         this.width = width;
         this.height = height;
         this.rows = rows;
         this.columns = columns;
         this.root = root;
-        this.pieces = pieces;
+       // this.pieces = pieces;
 
         rectangles = new Node[rows][columns];
     }
