@@ -16,7 +16,13 @@ public class Queen extends Piece {
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces){
-        /* TODO */
-        return new ArrayList<>();
+
+        // get all straight moves
+        List<Position> possibleMoves = getStraightMoves(pieces);
+
+        // append to array all diagonal moves
+        possibleMoves.addAll(getDiagonalMoves(pieces));
+
+        return possibleMoves;
     }
 }
