@@ -149,6 +149,7 @@ public class ChessboardGenerator {
     }
 
     // return piece on provided position if it is on it, otherwise return null
+    /* consider add this method to utils */
     public static Piece getPiece(int row, int column, Vector<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
@@ -156,5 +157,9 @@ public class ChessboardGenerator {
             }
         }
         return null;
+    }
+
+    public static boolean isFieldEmpty(int row, int column, Vector<Piece> pieces){
+        return getPiece(row, column, pieces) == null;
     }
 }
