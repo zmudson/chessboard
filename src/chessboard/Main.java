@@ -32,6 +32,7 @@ public class Main extends Application {
         launch(args);
     }
 
+    // handling javafx setup and initialize chessboard and eventHandler
     @Override
     public void start(Stage stage) {
         this.stage = stage;
@@ -48,6 +49,7 @@ public class Main extends Application {
         initHandlerEvents();
     }
 
+    // initialize chessboard
     public void initialize(){
         this.scene = new Scene(root, width, height);
         stage.setScene(scene);

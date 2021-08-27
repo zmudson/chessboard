@@ -9,18 +9,24 @@ import javafx.scene.shape.Rectangle;
 
 public class EventHandler {
 
+    // focused field color
     public static Color CLICKED_COLOR = Color.web("#f7d64f");
 
     public static Node clickedField;
 
-    // can change to rectangles.length and rectangles[i].length
+    /*
+    *
+    may be change to rectangles.length and rectangles[i].length
+    *
+    */
     private final int columns;
     private final int rows;
 
-    //which rectangle was clicked last time
+    // rectangle click handling
     private Rectangle lastClicked;
     private Color lastColor;
 
+    // piece focus handling
     private boolean focusedOnPiece = false;
     private Piece currentPiece = null;
 
@@ -32,6 +38,7 @@ public class EventHandler {
         this.chessboardGenerator = chessboardGenerator;
     }
 
+    // setup fields events
     public void setUpRectangleEvents(Node[][] rectangles) {
         for(int i = 0; i < columns; i++) {
             for(int j = 0; j < rows; j++) {
@@ -42,11 +49,13 @@ public class EventHandler {
                     public void handle(MouseEvent event) {
                         clickedField = rectangles[column][row];
 
-                        //check if it is possile to color rectangle
-                        //color only rectangles with pieces on it
                         if(!focusedOnPiece) {
                             Piece piece;
                             piece = chessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+
+                            //check if it is possile to color rectangle
+                            //color only rectangles with pieces on it
+
                             if (piece != null) {
                                 System.out.println(piece.getName());
 
@@ -63,6 +72,7 @@ public class EventHandler {
                                 chessboardGenerator.colorField(column, row, CLICKED_COLOR);
                             }
                         }else{
+                            // handling piece move
                             currentPiece.move(column, row);
                             currentPiece = null;
                             focusedOnPiece = false;

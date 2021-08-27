@@ -27,6 +27,7 @@ public abstract class Piece {
         this.color = color;
     }
 
+    // move piece on different field and update his image position
     public void move(int row, int column){
         this.row = row;
         this.column = column;

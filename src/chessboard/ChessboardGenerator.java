@@ -13,6 +13,7 @@ import java.util.Vector;
 
 public class ChessboardGenerator {
 
+    // fields colors
     public static Color CHESSBOARD_WHITE_COLOR = Color.web("#F0D9B5");
     public static Color CHESSBOARD_BLACK_COLOR = Color.web("#B58863");
 
@@ -35,6 +36,7 @@ public class ChessboardGenerator {
         rectangles = new Node[rows][columns];
     }
 
+    // create chessboard fields and color them
     public void generateChessboard(){
         double rectangleWidth = width / columns;
         double rectangleHeight = height / rows;
@@ -53,6 +55,7 @@ public class ChessboardGenerator {
         }
     }
 
+    // set pieces on their position on chessboard
     public void fillChessboard(){
         double widthPercentage = 1.0 / 6;
         double heightPercentage = 1.0 / 2;
@@ -76,6 +79,8 @@ public class ChessboardGenerator {
             }else if(piece instanceof Pawn){
                 factor = 5;
             }
+
+            // handling imageView initialization
             xPositionPercentage *= factor;
             ImageView imageView = ImageGenerator.getImagePart("assets/images/pieces.svg.png", xPositionPercentage,
                     yPositionPercentage, widthPercentage, heightPercentage);
@@ -86,13 +91,16 @@ public class ChessboardGenerator {
             imageView.setX(piece.getColumn() * figureWidth);
             imageView.setY(piece.getRow() * figureHeight);
             piece.setImage(imageView);
+
             //for eventhandler
             imageView.setMouseTransparent(true);
 
+            // add imageView to root
             ((Group) root).getChildren().add(imageView);
         }
     }
 
+    // initialize all pieces and add them to vector
     public void initChessboard(){
         pieces = new Vector<>();
         pieces.add(new Rook(0, 0, Piece.Colors.BLACK));
@@ -140,6 +148,7 @@ public class ChessboardGenerator {
         return pieces;
     }
 
+    // return piece on provided position if it is on it, otherwise return null
     public static Piece getPiece(int column, int row, Vector<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
