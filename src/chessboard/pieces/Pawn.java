@@ -45,7 +45,7 @@ public class Pawn extends Piece {
             if (rightPiece.getColor()!=color) positions.add(new Position(row+1, column+direction));
         }
         //if(rightFrontPiece!=null)
-
+        System.out.println("Obliczono "+positions.size()+" pozycji");
         return positions;
     }
 }
