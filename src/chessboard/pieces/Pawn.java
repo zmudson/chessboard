@@ -1,6 +1,7 @@
 package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
+import chessboard.Main;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -28,22 +29,33 @@ public class Pawn extends Piece {
 
         //TODO dokończyć bicie w przelocie oraz pokomentować
 
-        Piece frontPiece = ChessboardGenerator.getPiece(row, column+direction, pieces);
-        Piece leftPiece = ChessboardGenerator.getPiece(row-1, column, pieces);
-        Piece rightPiece = ChessboardGenerator.getPiece(row+1, column, pieces);
-        Piece rightFrontPiece = ChessboardGenerator.getPiece(row+1, column+direction, pieces);
-        Piece leftFrontPiece = ChessboardGenerator.getPiece(row-1, column+direction, pieces);
+        Piece frontPiece = ChessboardGenerator.getPiece(row+direction, column, pieces);
 
-        if(frontPiece==null)
-        {
-            positions.add(new Position(row+direction, column));
+        //Piece leftPiece = ChessboardGenerator.getPiece(row, column-1, pieces);
+        //Piece rightPiece = ChessboardGenerator.getPiece(row, column+1, pieces);
+
+        //even if position is out of the board pieces will be null
+        Piece rightFrontPiece = ChessboardGenerator.getPiece(row+direction, column+1, pieces);
+        Piece leftFrontPiece = ChessboardGenerator.getPiece(row+direction, column-1, pieces);
+
+        //move forward
+        if(frontPiece==null) {
+            //check if forward move is out of the board
+            if(row+direction!=Main.columns&&row+direction!=-1) positions.add(new Position(row+direction, column));
         }
-       /* if(leftPiece!=null && leftFrontPiece==null) {
-            if (leftPiece.getColor()!=color) positions.add(new Position(row-1, column+direction));
+        //normal beating
+        if(rightFrontPiece!=null) {
+            if(rightFrontPiece.getColor()!=color) {
+                positions.add(new Position(row+direction, column+1));
+            }
         }
-        if(rightPiece!=null && rightFrontPiece==null) {
-            if (rightPiece.getColor()!=color) positions.add(new Position(row+1, column+direction));
-        }*/
+        if(leftFrontPiece!=null) {
+            if(leftFrontPiece.getColor()!=color) {
+                positions.add(new Position(row+direction, column-1));
+            }
+        }
+
+
         //if(rightFrontPiece!=null)
         System.out.println("Obliczono "+positions.size()+" pozycji");
         return positions;
