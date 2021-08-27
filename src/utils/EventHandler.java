@@ -30,7 +30,7 @@ public class EventHandler {
     private boolean focusedOnPiece = false;
     private Piece currentPiece = null;
 
-    private ChessboardGenerator chessboardGenerator;
+    private final ChessboardGenerator chessboardGenerator;
 
     public EventHandler(int columns, int rows, ChessboardGenerator chessboardGenerator) {
         this.columns = columns;
@@ -51,7 +51,7 @@ public class EventHandler {
 
                         if(!focusedOnPiece) {
                             Piece piece;
-                            piece = chessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+                            piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
 
                             //check if it is possile to color rectangle
                             //color only rectangles with pieces on it
