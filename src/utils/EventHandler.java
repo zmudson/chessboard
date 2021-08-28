@@ -5,7 +5,6 @@ import chessboard.Main;
 import chessboard.pieces.Pawn;
 import chessboard.pieces.Piece;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -37,7 +36,7 @@ public class EventHandler {
     // piece focus handling
     private boolean focusedOnPiece = false;
     private Piece currentPiece = null;
-    private List<Position> focusedPiecePositions = new ArrayList<Position>();
+    private List<Position> focusedPiecePositions = new ArrayList<>();
     private Rectangle lastMovedFromField = null;
     private Rectangle lastMovedToField = null;
     //for en pessant
@@ -58,88 +57,85 @@ public class EventHandler {
             for(int j = 0; j < columns; j++) {
                 final int row = i;
                 final int column = j;
-                rectangles[i][j].setOnMousePressed(new javafx.event.EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        clickedField = rectangles[row][column];
+                rectangles[i][j].setOnMousePressed(event -> {
+                    clickedField = rectangles[row][column];
 
-                        if(!focusedOnPiece) {
-                            Piece piece;
-                            piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+                    if(!focusedOnPiece) {
+                        Piece piece;
+                        piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
 
-                            //check if it is possile to color rectangle
-                            //color only rectangles with pieces on it
+                        //check if it is possile to color rectangle
+                        //color only rectangles with pieces on it
 
-                            if (piece != null) {
-                                System.out.println(piece.getName());
+                        if (piece != null) {
+                            System.out.println(piece.getName());
 
-                                // focus on piece
-                                focusedOnPiece = true;
-                                currentPiece = piece;
+                            // focus on piece
+                            focusedOnPiece = true;
+                            currentPiece = piece;
 
-                                //get and show available moves
-                                List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
-                                focusedPiecePositions = positions;
-                                for(Position pos : positions) {
-                                    Rectangle rect = (Rectangle) rectangles[pos.getRow()][pos.getColumn()];
-                                    rect.setFill(AVAILABLE_MOVE_COLOR);
-                                }
+                            //get and show available moves
+                            List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
+                            focusedPiecePositions = positions;
+                            for(Position pos : positions) {
+                                Rectangle rect = (Rectangle) rectangles[pos.getRow()][pos.getColumn()];
+                                rect.setFill(AVAILABLE_MOVE_COLOR);
+                            }
 
 
-                                //uncolor last piece
-                                if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
-                                lastClicked = (Rectangle) clickedField;
-                                lastColor = (Color) lastClicked.getFill();
-                                chessboardGenerator.colorField(row, column, CLICKED_COLOR);
+                            //uncolor last piece
+                            if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
+                            lastClicked = (Rectangle) clickedField;
+                            lastColor = (Color) lastClicked.getFill();
+                            chessboardGenerator.colorField(row, column, CLICKED_COLOR);
+                        }
+                    }
+                    // isFocused == true
+                    else {
+                        // handling piece move
+                        boolean legalMove = false;
+
+                        for(Position pos : focusedPiecePositions) {
+                            //if move is (pseudo)legal
+                            if(pos.getColumn()==column&&pos.getRow()==row) {
+                                legalMove = true;
+                                break;
                             }
                         }
-                        // isFocused == true
-                        else {
-                            // handling piece move
-                            boolean legalMove = false;
-
-                            for(Position pos : focusedPiecePositions) {
-                                //if move is (pseudo)legal
-                                if(pos.getColumn()==column&&pos.getRow()==row) {
-                                    legalMove = true;
-                                    break;
-                                }
-                            }
-                            // uncolor
-                            chessboardGenerator.colorField(lastClicked, lastColor);
-                            for(Position pos : focusedPiecePositions) {
-                                Color color = getFieldColor(pos.getRow(),pos.getColumn());
-                                chessboardGenerator.colorField(pos.getRow(), pos.getColumn(), color);
-                            }
-
-                            //if move is possible then make move and color it
-                            if(legalMove) {
-                                if(pawnForEnPessant!=null) {
-                                    pawnForEnPessant.setPossibleToBeBeatenEnPassant(false);
-                                    pawnForEnPessant = null;
-                                }
-
-
-                                currentPiece.move(row, column);
-
-                                //uncolor last moved fields
-                                if(lastMovedToField!=null) {
-                                    lastMovedFromField.setFill(getFieldColor((int)(lastMovedFromField.getX()*8/Main.width), (int)(lastMovedFromField.getY()*8/Main.width)));
-                                    lastMovedToField.setFill(getFieldColor((int)(lastMovedToField.getX()*8/Main.width), (int)(lastMovedToField.getY()*8/Main.width)));
-                                }
-                                //color this move
-                                chessboardGenerator.colorField(lastClicked, MOVED_FROM_COLOR);
-                                chessboardGenerator.colorField(row, column, MOVED_TO_COLOR);
-                                //remember which fields has been colored
-                                lastMovedFromField = lastClicked;
-                                lastMovedToField = (Rectangle) rectangles[row][column];
-                                lastClicked = null;
-                            }
-                            //unfocus
-                            focusedOnPiece = false;
-                            currentPiece = null;
-                            //lastClicked = (Rectangle)clickedField;
+                        // uncolor
+                        chessboardGenerator.colorField(lastClicked, lastColor);
+                        for(Position pos : focusedPiecePositions) {
+                            Color color = getFieldColor(pos.getRow(),pos.getColumn());
+                            chessboardGenerator.colorField(pos.getRow(), pos.getColumn(), color);
                         }
+
+                        //if move is possible then make move and color it
+                        if(legalMove) {
+                            if(pawnForEnPessant!=null) {
+                                pawnForEnPessant.setPossibleToBeBeatenEnPassant(false);
+                                pawnForEnPessant = null;
+                            }
+
+
+                            currentPiece.move(row, column);
+
+                            //uncolor last moved fields
+                            if(lastMovedToField!=null) {
+                                lastMovedFromField.setFill(getFieldColor((int)(lastMovedFromField.getX()*8/Main.width), (int)(lastMovedFromField.getY()*8/Main.width)));
+                                lastMovedToField.setFill(getFieldColor((int)(lastMovedToField.getX()*8/Main.width), (int)(lastMovedToField.getY()*8/Main.width)));
+                            }
+                            //color this move
+                            chessboardGenerator.colorField(lastClicked, MOVED_FROM_COLOR);
+                            chessboardGenerator.colorField(row, column, MOVED_TO_COLOR);
+                            //remember which fields has been colored
+                            lastMovedFromField = lastClicked;
+                            lastMovedToField = (Rectangle) rectangles[row][column];
+                            lastClicked = null;
+                        }
+                        //unfocus
+                        focusedOnPiece = false;
+                        currentPiece = null;
+                        //lastClicked = (Rectangle)clickedField;
                     }
                 });
             }
@@ -147,7 +143,7 @@ public class EventHandler {
     }
 
     private Color getFieldColor(int row, int column) {
-        return  (row + column) % 2 == 0 ? chessboardGenerator.CHESSBOARD_WHITE_COLOR : chessboardGenerator.CHESSBOARD_BLACK_COLOR;
+        return  (row + column) % 2 == 0 ? ChessboardGenerator.CHESSBOARD_WHITE_COLOR : ChessboardGenerator.CHESSBOARD_BLACK_COLOR;
     }
 
     //this cannot be made inside pawn class because en passent can be only performed right after 2 field move
