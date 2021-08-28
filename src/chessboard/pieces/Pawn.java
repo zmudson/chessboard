@@ -31,7 +31,7 @@ public class Pawn extends Piece {
     public void move(int row, int column) {
         if(Math.abs(this.row-row)==2) {
             possibleToBeBeatenEnPassant = true;
-            EventHandler.setPawnAbleToBeBeatenEnPessant(this);
+            ChessboardGenerator.setPawnAbleToBeBeatenEnPessant(this);
         }
         super.move(row,column);
         moved = true;

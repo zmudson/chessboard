@@ -25,6 +25,9 @@ public class ChessboardGenerator {
     private Node[][] rectangles;
     private Vector<Piece> pieces;
 
+    //for en pessant
+    private static Pawn pawnForEnPessant = null;
+
     public ChessboardGenerator(double width, double height, int rows, int columns, Parent root) {
         this.width = width;
         this.height = height;
@@ -161,5 +164,18 @@ public class ChessboardGenerator {
 
     public static boolean isFieldEmpty(int row, int column, Vector<Piece> pieces){
         return getPiece(row, column, pieces) == null;
+    }
+
+    //this cannot be made inside pawn class because en passent can be only performed right after 2 field move
+    public static void setPawnAbleToBeBeatenEnPessant(Pawn pawn) {
+        pawnForEnPessant = pawn;
+    }
+
+    public static Pawn getPawnForEnPessant() {
+        return pawnForEnPessant;
+    }
+
+    public static void setPawnForEnPessant(Pawn pawnForEnPessant) {
+        ChessboardGenerator.pawnForEnPessant = pawnForEnPessant;
     }
 }
