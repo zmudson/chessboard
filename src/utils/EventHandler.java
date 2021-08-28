@@ -2,6 +2,7 @@ package utils;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import chessboard.pieces.Pawn;
 import chessboard.pieces.Piece;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +40,8 @@ public class EventHandler {
     private List<Position> focusedPiecePositions = new ArrayList<Position>();
     private Rectangle lastMovedFromField = null;
     private Rectangle lastMovedToField = null;
+    //for en pessant
+    private static Pawn pawnForEnPessant = null;
 
     private final ChessboardGenerator chessboardGenerator;
 
@@ -111,6 +114,12 @@ public class EventHandler {
 
                             //if move is possible then make move and color it
                             if(legalMove) {
+                                if(pawnForEnPessant!=null) {
+                                    pawnForEnPessant.setPossibleToBeBeatenEnPassant(false);
+                                    pawnForEnPessant = null;
+                                }
+
+
                                 currentPiece.move(row, column);
 
                                 //uncolor last moved fields
@@ -139,5 +148,10 @@ public class EventHandler {
 
     private Color getFieldColor(int row, int column) {
         return  (row + column) % 2 == 0 ? chessboardGenerator.CHESSBOARD_WHITE_COLOR : chessboardGenerator.CHESSBOARD_BLACK_COLOR;
+    }
+
+    //this cannot be made inside pawn class because en passent can be only performed right after 2 field move
+    public static void setPawnAbleToBeBeatenEnPessant(Pawn pawn) {
+        pawnForEnPessant = pawn;
     }
 }
