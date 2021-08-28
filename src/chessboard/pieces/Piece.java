@@ -2,6 +2,7 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import utils.MoveHandler;
 import utils.Position;
@@ -39,7 +40,17 @@ public abstract class Piece {
     public abstract List<Position> getPossibleMoves(Vector<Piece> pieces);
 
     // move piece on different field and update his image position
-    public void move(int row, int column){
+    public void move(int row, int column, ChessboardGenerator chessboardGenerator){
+        /* TODO */
+        // handling en passant
+
+        // capture handling
+        Piece piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+        if(piece != null){
+            ((Group)chessboardGenerator.getRoot()).getChildren().remove(piece.getImage());
+            chessboardGenerator.getPieces().remove(piece);
+        }
+
         this.row = row;
         this.column = column;
         int x = (int)(image.getFitWidth() * column);

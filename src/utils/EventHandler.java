@@ -117,7 +117,7 @@ public class EventHandler {
                             }
 
 
-                            currentPiece.move(row, column);
+                            currentPiece.move(row, column, chessboardGenerator);
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {
