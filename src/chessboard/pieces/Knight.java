@@ -20,22 +20,30 @@ public class Knight extends Piece {
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces){
-        /* TODO */
+        
         List<Position> possibleMoves = new ArrayList<>();
 
-        // arrays of possible moves in right direction
-        int[] rowMoves = new int[] {-2, -2, -1, -1, 1, 1, 2, 2};
-        int[] columnMoves = new int[] {-1, 1, -2, 2, -2, 2, -1, 1};
+        for(int i = 0, rowMove = -2, columnMove; i < maxPossibleMovesNumber; i++){
 
-        for(int i = 0; i < maxPossibleMovesNumber; i++){
+            // set column move
+            columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
+
             // change current position
-            int row = this.row + rowMoves[i];
-            int column = this.column + columnMoves[i];
+            int row = this.row + rowMove;
+            int column = this.column + columnMove;
+
             Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
 
             // add move to an array if is legal
             if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 && MoveHandler.isValid(this, piece))
                 possibleMoves.add(new Position(row, column));
+
+            // set row move
+            if(i % 2 != 0){
+                rowMove++;
+                if(rowMove == 0)
+                    rowMove++;
+            }
         }
 
         return possibleMoves;
