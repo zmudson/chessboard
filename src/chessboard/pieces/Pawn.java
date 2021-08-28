@@ -3,6 +3,7 @@ package chessboard.pieces;
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
 import utils.EventHandler;
+import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Pawn extends Piece {
 
     // en passant
     private boolean possibleToBeBeatenEnPassant = false;
+    private int enPassantLineNumber = 3;
 
     public Pawn(int row, int column, Piece.Colors color) {
         super(row, column, name, filename, power, color);
@@ -38,65 +40,65 @@ public class Pawn extends Piece {
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces) {
-        List<Position> positions = new ArrayList<>();
+
+        List<Position> possiblePositions = new ArrayList<>();
+
         //check positions
         //possible moves for pawn:
-        // up, beating and en passant
+        // up, capture and en passant
 
-        Piece frontPiece = ChessboardGenerator.getPiece(row+direction, column, pieces);
+        Piece frontPiece = ChessboardGenerator.getPiece(row + direction, column, pieces);
 
         //even if position is out of the board pieces will be null
-        Piece rightFrontPiece = ChessboardGenerator.getPiece(row+direction, column+1, pieces);
-        Piece leftFrontPiece = ChessboardGenerator.getPiece(row+direction, column-1, pieces);
+        Piece rightFrontPiece = ChessboardGenerator.getPiece(row + direction, column + 1, pieces);
+        Piece leftFrontPiece = ChessboardGenerator.getPiece(row + direction, column - 1, pieces);
 
-        //move forward
-        if(frontPiece==null) {
-            //check if forward move is out of the board
-            if(row+direction!=Main.columns&&row+direction!=-1) positions.add(new Position(row+direction, column));
-        }
-        //normal beating
-        if(rightFrontPiece!=null) {
-            if(rightFrontPiece.getColor()!=color) {
-                positions.add(new Position(row+direction, column+1));
+        //move forward, check if forward move is out of the board
+        if(frontPiece == null && (row + direction >= 0 && row + direction <= Main.rows - 1)) {
+            possiblePositions.add(new Position(row + direction, column));
+
+            // double move
+            if(!moved) {
+                Piece doubleForwardPiece = ChessboardGenerator.getPiece(row + 2 * direction, column, pieces);
+                if(doubleForwardPiece == null) {
+                    possiblePositions.add(new Position(row + 2 * direction, column));
+                }
             }
         }
-        if(leftFrontPiece!=null) {
-            if(leftFrontPiece.getColor()!=color) {
-                positions.add(new Position(row+direction, column-1));
-            }
+
+        // normal capture
+        if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece)) {
+            possiblePositions.add(new Position(row + direction, column + 1));
         }
-        //double field move
-        if(!moved&&frontPiece==null) {
-            Piece doubleForwardPiece = ChessboardGenerator.getPiece(row+2*direction, column, pieces);
-            if(doubleForwardPiece==null) {
-                positions.add(new Position(row+2*direction, column));
-            }
+
+        if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece)) {
+            possiblePositions.add(new Position(row + direction, column - 1));
         }
-        //there is else because there will never be a situation where you can move pawn 2 fields forward and beat en passant
-        else {
+
+        // check if en passant is possible
+        if(row == enPassantLineNumber || row == Main.rows - 1 - enPassantLineNumber){
             //en pessant
-            Piece leftPiece = ChessboardGenerator.getPiece(row,column-1, pieces);
-            Piece rightPiece = ChessboardGenerator.getPiece(row,column+1, pieces);
+            Piece leftPiece = ChessboardGenerator.getPiece(row,column - 1, pieces);
+            Piece rightPiece = ChessboardGenerator.getPiece(row,column + 1, pieces);
             //left
-            if(leftPiece!=null) {
+            if(leftPiece != null) {
                 if(leftPiece instanceof Pawn) {
                     if(((Pawn) leftPiece).isPossibleToBeBeatenEnPassant()) {
-                        positions.add(new Position(row+direction, column-1));
+                        possiblePositions.add(new Position(row + direction, column - 1));
                     }
                 }
             }
             //right
-            if(rightPiece!=null) {
+            if(rightPiece != null) {
                 if(rightPiece instanceof Pawn) {
                     if(((Pawn) rightPiece).isPossibleToBeBeatenEnPassant()) {
-                        positions.add(new Position(row+direction, column+1));
+                        possiblePositions.add(new Position(row + direction, column + 1));
                     }
                 }
             }
         }
 
-        System.out.println("Obliczono "+positions.size()+" pozycji");
-        return positions;
+        return possiblePositions;
     }
 
     public boolean isPossibleToBeBeatenEnPassant() {
