@@ -21,6 +21,11 @@ public class ChessboardGenerator {
     private final double height;
     private final int rows;
     private final int columns;
+
+    public Parent getRoot() {
+        return root;
+    }
+
     private Parent root;
     private Node[][] rectangles;
     private Vector<Piece> pieces;

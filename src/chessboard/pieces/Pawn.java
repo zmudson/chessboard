@@ -28,14 +28,13 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void move(int row, int column) {
+    public void move(int row, int column, ChessboardGenerator chessboardGenerator) {
         if(Math.abs(this.row-row)==2) {
             possibleToBeBeatenEnPassant = true;
             ChessboardGenerator.setPawnAbleToBeBeatenEnPessant(this);
         }
-        super.move(row,column);
+        super.move(row,column, chessboardGenerator);
         moved = true;
-
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces) {
