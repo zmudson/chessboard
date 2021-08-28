@@ -2,6 +2,7 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import utils.EventHandler;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -13,12 +14,28 @@ public class Pawn extends Piece {
     public static final String name = "pawn";
     private static final String filename = "";
 
-    private int direction;
+    private final int direction;
+    //to check if pawn can perform double field move
+    private boolean moved = false;
+
+    // en passant
+    private boolean possibleToBeBeatenEnPassant = false;
 
     public Pawn(int row, int column, Piece.Colors color) {
         super(row, column, name, filename, power, color);
         //if color is white direction is to go up
         direction = color == Colors.WHITE ? -1 : 1;
+    }
+
+    @Override
+    public void move(int row, int column) {
+        if(Math.abs(this.row-row)==2) {
+            possibleToBeBeatenEnPassant = true;
+            EventHandler.setPawnAbleToBeBeatenEnPessant(this);
+        }
+        super.move(row,column);
+        moved = true;
+
     }
 
     public List<Position> getPossibleMoves(Vector<Piece> pieces) {
@@ -27,12 +44,9 @@ public class Pawn extends Piece {
         //possible moves for pawn:
         // up, beating and en passant
 
-        //TODO dokończyć bicie w przelocie oraz pokomentować
+        //TODO dokończyć bicie w przelocie
 
         Piece frontPiece = ChessboardGenerator.getPiece(row+direction, column, pieces);
-
-        //Piece leftPiece = ChessboardGenerator.getPiece(row, column-1, pieces);
-        //Piece rightPiece = ChessboardGenerator.getPiece(row, column+1, pieces);
 
         //even if position is out of the board pieces will be null
         Piece rightFrontPiece = ChessboardGenerator.getPiece(row+direction, column+1, pieces);
@@ -54,10 +68,47 @@ public class Pawn extends Piece {
                 positions.add(new Position(row+direction, column-1));
             }
         }
+        //double field move
+        if(!moved) {
+            Piece doubleForwardPiece = ChessboardGenerator.getPiece(row+2*direction, column, pieces);
+            if(doubleForwardPiece==null) {
+                positions.add(new Position(row+2*direction, column));
+            }
+        }
+        //there is else because there will never be a situation where you can move pawn 2 fields forward and beat en passant
+        else {
+            //en pessant
+            Piece leftPiece = ChessboardGenerator.getPiece(row,column-1, pieces);
+            Piece rightPiece = ChessboardGenerator.getPiece(row,column+1, pieces);
+            //left
+            if(leftPiece!=null) {
+                if(leftPiece instanceof Pawn) {
+                    if(((Pawn) leftPiece).isPossibleToBeBeatenEnPassant()) {
+                        positions.add(new Position(row+direction, column-1));
+                    }
+                }
+            }
+            //right
+            if(rightPiece!=null) {
+                if(rightPiece instanceof Pawn) {
+                    if(((Pawn) rightPiece).isPossibleToBeBeatenEnPassant()) {
+                        positions.add(new Position(row+direction, column+1));
+                    }
+                }
+            }
+        }
 
 
-        //if(rightFrontPiece!=null)
+
         System.out.println("Obliczono "+positions.size()+" pozycji");
         return positions;
+    }
+
+    public boolean isPossibleToBeBeatenEnPassant() {
+        return possibleToBeBeatenEnPassant;
+    }
+
+    public void setPossibleToBeBeatenEnPassant(boolean possibleToBeBeatenEnPassant) {
+        this.possibleToBeBeatenEnPassant = possibleToBeBeatenEnPassant;
     }
 }
