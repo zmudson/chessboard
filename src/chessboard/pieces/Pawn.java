@@ -44,8 +44,6 @@ public class Pawn extends Piece {
         //possible moves for pawn:
         // up, beating and en passant
 
-        //TODO dokończyć bicie w przelocie
-
         Piece frontPiece = ChessboardGenerator.getPiece(row+direction, column, pieces);
 
         //even if position is out of the board pieces will be null
@@ -69,7 +67,7 @@ public class Pawn extends Piece {
             }
         }
         //double field move
-        if(!moved) {
+        if(!moved&&frontPiece==null) {
             Piece doubleForwardPiece = ChessboardGenerator.getPiece(row+2*direction, column, pieces);
             if(doubleForwardPiece==null) {
                 positions.add(new Position(row+2*direction, column));
@@ -97,8 +95,6 @@ public class Pawn extends Piece {
                 }
             }
         }
-
-
 
         System.out.println("Obliczono "+positions.size()+" pozycji");
         return positions;
