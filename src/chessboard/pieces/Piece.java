@@ -39,24 +39,44 @@ public abstract class Piece {
     // get all pseudolegal moves
     public abstract List<Position> getPossibleMoves(Vector<Piece> pieces);
 
-    // move piece on different field and update his image position
-    public void move(int row, int column, ChessboardGenerator chessboardGenerator){
-        /* TODO */
-        // handling en passant
-
-        // capture handling
-        Piece piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+    // capture handling
+    protected void capture(Piece piece, ChessboardGenerator chessboardGenerator){
         if(piece != null){
             ((Group)chessboardGenerator.getRoot()).getChildren().remove(piece.getImage());
             chessboardGenerator.getPieces().remove(piece);
         }
+    }
 
+    protected void changePosition(int row, int column){
         this.row = row;
         this.column = column;
         int x = (int)(image.getFitWidth() * column);
         int y = (int)(image.getFitHeight() * row);
         image.setX(x);
         image.setY(y);
+    }
+
+    protected void unsetEnPassant(){
+        Pawn pawn = ChessboardGenerator.getPawnAbleToBeCapturedByEnPassant();
+        if(pawn != null){
+            pawn.setIsPossibleToBeCapturedByEnPassant(false);
+            ChessboardGenerator.setPawnAbleToBeCapturedByEnPassant(null);
+        }
+    }
+
+    // move piece on different field and update his image position
+    public void move(int row, int column, ChessboardGenerator chessboardGenerator){
+
+        // handle en passant
+        unsetEnPassant();
+
+        // capture handling
+        Piece piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+        if(piece != null)
+            capture(piece, chessboardGenerator);
+
+        // handle change of piece and his image
+        changePosition(row, column);
     }
 
     // add move to possible moves array and return true if next position is available or false otherwise

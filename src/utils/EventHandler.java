@@ -81,7 +81,6 @@ public class EventHandler {
                                 rect.setFill(AVAILABLE_MOVE_COLOR);
                             }
 
-
                             //uncolor last piece
                             if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
                             lastClicked = (Rectangle) clickedField;
@@ -110,11 +109,6 @@ public class EventHandler {
 
                         //if move is possible then make move and color it
                         if(legalMove) {
-                            if(ChessboardGenerator.getPawnForEnPessant()!=null) {
-                                ChessboardGenerator.getPawnForEnPessant().setPossibleToBeBeatenEnPassant(false);
-                                ChessboardGenerator.setPawnForEnPessant(null);
-                            }
-
 
                             currentPiece.move(row, column, chessboardGenerator);
 
