@@ -73,6 +73,12 @@ public class EventHandler {
                             focusedOnPiece = true;
                             currentPiece = piece;
 
+                            //uncolor last piece
+                            if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
+                            lastClicked = (Rectangle) clickedField;
+                            lastColor = (Color) lastClicked.getFill();
+                            chessboardGenerator.colorField(row, column, CLICKED_COLOR);
+
                             //get and show available moves
                             List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
                             focusedPiecePositions = positions;
@@ -81,11 +87,7 @@ public class EventHandler {
                                 rect.setFill(AVAILABLE_MOVE_COLOR);
                             }
 
-                            //uncolor last piece
-                            if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
-                            lastClicked = (Rectangle) clickedField;
-                            lastColor = (Color) lastClicked.getFill();
-                            chessboardGenerator.colorField(row, column, CLICKED_COLOR);
+
                         }
                     }
                     // isFocused == true
@@ -105,6 +107,11 @@ public class EventHandler {
                         for(Position pos : focusedPiecePositions) {
                             Color color = getFieldColor(pos.getRow(),pos.getColumn());
                             chessboardGenerator.colorField(pos.getRow(), pos.getColumn(), color);
+                        }
+                        //make sure that last colors are showed
+                        if(lastMovedToField!=null) {
+                            lastMovedToField.setFill(MOVED_TO_COLOR);
+                            lastMovedFromField.setFill(MOVED_FROM_COLOR);
                         }
 
                         //if move is possible then make move and color it
