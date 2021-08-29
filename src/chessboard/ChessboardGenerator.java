@@ -63,48 +63,52 @@ public class ChessboardGenerator {
         }
     }
 
-    // set pieces on their position on chessboard
-    public void fillChessboard(){
+    public void handleImageDraw(Piece piece){
         double widthPercentage = 1.0 / 6;
         double heightPercentage = 1.0 / 2;
         int factor = 0;
+        double xPositionPercentage = 1.0 / 6;
+        double yPositionPercentage = 0;
+        if(piece.getColor() == Piece.Colors.BLACK){
+            yPositionPercentage = 1.0 / 2;
+        }
+        if(piece instanceof King){
+            factor = 0;
+        }else if(piece instanceof Queen){
+            factor = 1;
+        }else if(piece instanceof Bishop){
+            factor = 2;
+        }else if(piece instanceof Knight){
+            factor = 3;
+        }else if(piece instanceof Rook){
+            factor = 4;
+        }else if(piece instanceof Pawn){
+            factor = 5;
+        }
+
+        // handling imageView initialization
+        xPositionPercentage *= factor;
+        ImageView imageView = ImageGenerator.getImagePart("assets/images/pieces.svg.png", xPositionPercentage,
+                yPositionPercentage, widthPercentage, heightPercentage);
+        double figureWidth = width / columns;
+        double figureHeight = height / rows;
+        imageView.setFitWidth(figureWidth);
+        imageView.setFitHeight(figureHeight);
+        imageView.setX(piece.getColumn() * figureWidth);
+        imageView.setY(piece.getRow() * figureHeight);
+        piece.setImage(imageView);
+
+        //for eventhandler
+        imageView.setMouseTransparent(true);
+
+        // add imageView to root
+        ((Group) root).getChildren().add(imageView);
+    }
+
+    // set pieces on their position on chessboard
+    public void fillChessboard(){
         for(Piece piece : pieces){
-            double xPositionPercentage = 1.0 / 6;
-            double yPositionPercentage = 0;
-            if(piece.getColor() == Piece.Colors.BLACK){
-                yPositionPercentage = 1.0 / 2;
-            }
-            if(piece instanceof King){
-                factor = 0;
-            }else if(piece instanceof Queen){
-                factor = 1;
-            }else if(piece instanceof Bishop){
-                factor = 2;
-            }else if(piece instanceof Knight){
-                factor = 3;
-            }else if(piece instanceof Rook){
-                factor = 4;
-            }else if(piece instanceof Pawn){
-                factor = 5;
-            }
-
-            // handling imageView initialization
-            xPositionPercentage *= factor;
-            ImageView imageView = ImageGenerator.getImagePart("assets/images/pieces.svg.png", xPositionPercentage,
-                    yPositionPercentage, widthPercentage, heightPercentage);
-            double figureWidth = width / columns;
-            double figureHeight = height / rows;
-            imageView.setFitWidth(figureWidth);
-            imageView.setFitHeight(figureHeight);
-            imageView.setX(piece.getColumn() * figureWidth);
-            imageView.setY(piece.getRow() * figureHeight);
-            piece.setImage(imageView);
-
-            //for eventhandler
-            imageView.setMouseTransparent(true);
-
-            // add imageView to root
-            ((Group) root).getChildren().add(imageView);
+            handleImageDraw(piece);
         }
     }
 
@@ -171,16 +175,12 @@ public class ChessboardGenerator {
         return getPiece(row, column, pieces) == null;
     }
 
-    //this cannot be made inside pawn class because en passent can be only performed right after 2 field move
-    public static void setPawnAbleToBeBeatenEnPessant(Pawn pawn) {
+    public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
         pawnForEnPessant = pawn;
     }
 
-    public static Pawn getPawnForEnPessant() {
+    public static Pawn getPawnAbleToBeCapturedByEnPassant() {
         return pawnForEnPessant;
     }
 
-    public static void setPawnForEnPessant(Pawn pawnForEnPessant) {
-        ChessboardGenerator.pawnForEnPessant = pawnForEnPessant;
-    }
 }
