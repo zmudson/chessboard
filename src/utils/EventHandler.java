@@ -67,8 +67,6 @@ public class EventHandler {
                         //color only rectangles with pieces on it
 
                         if (piece != null) {
-                            System.out.println(piece.getName());
-
                             // focus on piece
                             focusedOnPiece = true;
                             currentPiece = piece;
@@ -131,12 +129,16 @@ public class EventHandler {
                             lastMovedFromField = lastClicked;
                             lastMovedToField = (Rectangle) rectangles[row][column];
                             lastClicked = null;
+
+                            //TEST LOCATION
+                            chessboardGenerator.checkAllPinsAndChecks();
                         }
                         //unfocus
                         focusedOnPiece = false;
                         currentPiece = null;
                         //lastClicked = (Rectangle)clickedField;
                     }
+
                 });
             }
         }
