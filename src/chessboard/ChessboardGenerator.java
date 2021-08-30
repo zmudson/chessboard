@@ -1,6 +1,7 @@
 package chessboard;
 
 import chessboard.pieces.*;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -225,6 +226,8 @@ public class ChessboardGenerator {
         //which king is going to be checked
         King king = null;
         ArrayList<Knight> knights = new ArrayList<>();
+
+        List<Position> fieldsToBlockCheck = new ArrayList<>();
         // looking for the king and knights
         for(Piece piece : pieces) {
             if(piece instanceof King && piece.getColor() == colorToMove) {
@@ -276,22 +279,32 @@ public class ChessboardGenerator {
 
                             //calculate which direction is going to be blocked and
                             //set appropriate flags for blocking moves (because its being pinned)
-                            int diff = Math.abs(dx - dy);
-                            if(diff!=1) { // diagonal
-                                if(diff==0) possiblePin.blockDirections(Piece.BlockedDirections.DOWN_UP_DIAGONAL);
-                                else possiblePin.blockDirections(Piece.BlockedDirections.UP_DOWN_DIAGONAL);
-                            }
-                            //vertical/horizontal
-                            else {
-                                if(dx==0) possiblePin.blockDirections(Piece.BlockedDirections.HORIZONTAL);
-                                else possiblePin.blockDirections(Piece.BlockedDirections.VERTICAL);
-                            }
 
+                            possiblePin.blockDirections(getThisDirection(dx, dy));
 
                             System.out.println(possiblePin.getName()+"["+possiblePin.getRow()+","+possiblePin.getColumn()+"] jest pinem!");
                         }
                         // if there weren't any pins it must be a check
                         else {
+                            //only in this case we will create blocking fields to be blocked by our pieces
+                            if(checks.size()==0) {
+                                int yToBlock = kingColumn;
+                                int xToBlock = kingRow;
+                                while(xToBlock>=0 && xToBlock<Main.columns && yToBlock>=0 && yToBlock<=Main.rows) {
+                                    xToBlock+=dx;
+                                    yToBlock+=dy;
+                                    fieldsToBlockCheck.add(new Position(xToBlock, yToBlock));
+                                    if(xToBlock==piece.getRow() && yToBlock==piece.getColumn()) {
+                                        System.out.println("Wyznaczono pola do blokowania");
+                                        for(Position field : fieldsToBlockCheck) {
+                                            System.out.println(field.getRow()+", "+field.getColumn());
+                                        }
+                                        System.out.println("-------------");
+                                        break;
+                                    }
+                                }
+                            }
+
                             checks.add(piece);
                             System.out.println(piece.getName()+" szachuje!");
                         }
@@ -299,7 +312,8 @@ public class ChessboardGenerator {
                     break; //if it was a black piece, anything behind it won't be checking
                 }
             }
-            if(checks.size()==2) break; //if there are 2 checks only king can make move
+            if(checks.size()==1) ; //here sending blocked fields
+            else if(checks.size()==2) break; //if there are 2 checks only king can make move
         }
         //we must also check knights
         if(checks.size()<2) {
@@ -325,7 +339,7 @@ public class ChessboardGenerator {
             }
         }
         //DEBUG
-        System.out.println("Checks:");
+        if(checks.size()>0) System.out.println("Checks:");
         for(Piece check: checks) {
             System.out.println(check.getName());
         }
@@ -335,6 +349,19 @@ public class ChessboardGenerator {
         for(Piece piece: pieces) {
             piece.setPinned(false);
             piece.unblockDirections();
+        }
+    }
+
+    private Piece.BlockedDirections getThisDirection(int dx, int dy) {
+        int diff = Math.abs(dx - dy);
+        if(diff!=1) { // diagonal
+            if(diff==0) return (Piece.BlockedDirections.DOWN_UP_DIAGONAL);
+            else return (Piece.BlockedDirections.UP_DOWN_DIAGONAL);
+        }
+        //vertical/horizontal
+        else {
+            if(dx==0) return (Piece.BlockedDirections.HORIZONTAL);
+            else return (Piece.BlockedDirections.VERTICAL);
         }
     }
 
