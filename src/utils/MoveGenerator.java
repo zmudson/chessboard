@@ -18,7 +18,7 @@ public class MoveGenerator {
         this.blackPieces = blackPieces;
     }
 
-    public ArrayList<Move>[][] generatorMoves(Piece.Colors color){
+    public ArrayList<Move>[][] generateMoves(Piece.Colors color){
         ArrayList<Piece> pieces = null;
 
         if(color == Piece.Colors.WHITE)
@@ -31,11 +31,15 @@ public class MoveGenerator {
         if(pieces != null){
             for (Piece piece : pieces){
                 List<Move> possibleMoves = piece.getPossibleMoves(pieces);
-                Object movesList = movesBoard[piece.getRow()][piece.getColumn()];
-                if(movesList == null)
-                    movesList = new ArrayList<Move>();
-//                else
-//                    ((ArrayList<Move>) movesList).add()
+                for(Move move : possibleMoves){
+                    Position position = move.getEndPosition();
+                    ArrayList<Move> movesList = (ArrayList<Move>) movesBoard[position.getRow()][position.getColumn()];
+                    if(movesList == null){
+                        movesBoard[piece.getRow()][piece.getColumn()] = new ArrayList<Move>();
+                        movesList = (ArrayList<Move>) movesBoard[piece.getRow()][piece.getColumn()];
+                    }
+                    movesList.add(move);
+                }
             }
         }
 
