@@ -1,13 +1,9 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
-import chessboard.Main;
-import utils.MoveHandler;
+import utils.Move;
 import utils.Position;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Rook extends Piece {
     public static final double power = 500;
@@ -18,7 +14,7 @@ public class Rook extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(List<Piece> pieces){
         /* TODO */
         // castling
 

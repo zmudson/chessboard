@@ -2,12 +2,12 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import utils.Move;
 import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Pawn extends Piece {
     public static final double power = 100;
@@ -72,9 +72,9 @@ public class Pawn extends Piece {
         }
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces) {
+    public List<Move> getPossibleMoves(List<Piece> pieces) {
 
-        List<Position> possiblePositions = new ArrayList<>();
+        List<Move> possiblePositions = new ArrayList<>();
 
         //check positions
         //possible moves for pawn:
@@ -88,24 +88,24 @@ public class Pawn extends Piece {
 
         //move forward, check if forward move is out of the board
         if(frontPiece == null) {
-            possiblePositions.add(new Position(row + direction, column));
+            possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column)));
 
             // double move
             if(!moved) {
                 Piece doubleForwardPiece = ChessboardGenerator.getPiece(row + 2 * direction, column, pieces);
                 if(doubleForwardPiece == null) {
-                    possiblePositions.add(new Position(row + 2 * direction, column));
+                    possiblePositions.add(new Move(this, getPosition(), new Position(row + 2 * direction, column)));
                 }
             }
         }
 
         // normal capture
         if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece)) {
-            possiblePositions.add(new Position(row + direction, column + 1));
+            possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
         }
 
         if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece)) {
-            possiblePositions.add(new Position(row + direction, column - 1));
+            possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
         }
 
         // check if en passant is possible
@@ -117,12 +117,12 @@ public class Pawn extends Piece {
 
             //left
             if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
-                possiblePositions.add(new Position(row + direction, column - 1));
+                possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
             }
 
             //right
             if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
-                possiblePositions.add(new Position(row + direction, column + 1));
+                possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
             }
         }
 
