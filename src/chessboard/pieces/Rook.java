@@ -18,7 +18,7 @@ public class Rook extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(Vector<Piece> pieces){
+    public List<Position> getPossibleMoves(List<Piece> pieces){
         /* TODO */
         // castling
 

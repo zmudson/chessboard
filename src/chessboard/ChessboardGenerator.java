@@ -32,7 +32,9 @@ public class ChessboardGenerator {
 
     private Parent root;
     private Node[][] rectangles;
-    private Vector<Piece> pieces;
+    private ArrayList<Piece> pieces;
+    private ArrayList<Piece> whitePieces;
+    private ArrayList<Piece> blackPieces;
 
     private Piece.Colors colorToMove = Piece.Colors.WHITE;
 
@@ -120,7 +122,11 @@ public class ChessboardGenerator {
 
     // initialize all pieces and add them to vector
     public void initChessboard(){
-        pieces = new Vector<>();
+        pieces = new ArrayList<>();
+
+        // init black pieces
+        blackPieces = new ArrayList<>();
+
         pieces.add(new Rook(0, 0, Piece.Colors.BLACK));
         pieces.add(new Knight(0, 1, Piece.Colors.BLACK));
         pieces.add(new Bishop(0, 2, Piece.Colors.BLACK));
@@ -134,6 +140,9 @@ public class ChessboardGenerator {
             pieces.add(new Pawn(1, i, Piece.Colors.BLACK));
         }
 
+        // init white pieces
+        whitePieces = new ArrayList<>();
+
         pieces.add(new Rook(rows - 1, 0, Piece.Colors.WHITE));
         pieces.add(new Knight(rows - 1, 1, Piece.Colors.WHITE));
         pieces.add(new Bishop(rows - 1, 2, Piece.Colors.WHITE));
@@ -145,6 +154,13 @@ public class ChessboardGenerator {
 
         for(int i = 0; i < columns; i++){
             pieces.add(new Pawn(rows - 2, i, Piece.Colors.WHITE));
+        }
+
+        for(Piece piece : pieces){
+            if(piece.getColor() == Piece.Colors.BLACK)
+                blackPieces.add(piece);
+            else if (piece.getColor() == Piece.Colors.WHITE)
+                whitePieces.add(piece);
         }
     }
 
@@ -162,13 +178,13 @@ public class ChessboardGenerator {
         rect.setFill(color);
     }
 
-    public Vector<Piece> getPieces() {
+    public List<Piece> getPieces() {
         return pieces;
     }
 
     // return piece on provided position if it is on it, otherwise return null
     /* consider add this method to utils */
-    public static Piece getPiece(int row, int column, Vector<Piece> pieces) {
+    public static Piece getPiece(int row, int column, List<Piece> pieces) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 return piece;
@@ -177,16 +193,32 @@ public class ChessboardGenerator {
         return null;
     }
 
-    public static boolean isFieldEmpty(int row, int column, Vector<Piece> pieces){
+    public static boolean isFieldEmpty(int row, int column, ArrayList<Piece> pieces){
         return getPiece(row, column, pieces) == null;
     }
 
     public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
-        pawnForEnPessant = pawn;
+        pawnForEnPassant = pawn;
     }
 
     public static Pawn getPawnAbleToBeCapturedByEnPassant() {
-        return pawnForEnPessant;
+        return pawnForEnPassant;
+    }
+
+    public List<Piece> getWhitePieces() {
+        return whitePieces;
+    }
+
+    public void setWhitePieces(ArrayList<Piece> whitePieces) {
+        this.whitePieces = whitePieces;
+    }
+
+    public ArrayList<Piece> getBlackPieces() {
+        return blackPieces;
+    }
+
+    public void setBlackPieces(ArrayList<Piece> blackPieces) {
+        this.blackPieces = blackPieces;
     }
 
     public void checkAllPinsAndChecks() {
