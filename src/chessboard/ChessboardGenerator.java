@@ -38,8 +38,8 @@ public class ChessboardGenerator {
 
     private Piece.Colors colorToMove = Piece.Colors.WHITE;
 
-    //for en pessant
-    private static Pawn pawnForEnPessant = null;
+    //for en passant
+    private static Pawn pawnForEnPassant = null;
 
     public ChessboardGenerator(double width, double height, int rows, int columns, Parent root) {
         this.width = width;
@@ -198,11 +198,11 @@ public class ChessboardGenerator {
     }
 
     public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
-        pawnForEnPessant = pawn;
+        pawnForEnPassant = pawn;
     }
 
     public static Pawn getPawnAbleToBeCapturedByEnPassant() {
-        return pawnForEnPessant;
+        return pawnForEnPassant;
     }
 
     public List<Piece> getWhitePieces() {
@@ -248,11 +248,9 @@ public class ChessboardGenerator {
                 int x = kingRow;
                 Piece possiblePin = null;
                 //loop through the direction
-                //int n=0;
                 while(x>=0 && x<Main.columns && y>=0 && y<=Main.rows) {
                     x+=dx;
                     y+=dy;
-                    //n++;
                     //System.out.println("Sprawdzenie "+x+" "+y);
                     Piece piece = getPiece(x,y,pieces);
                     if(piece==null) continue; //skip to the next position
@@ -271,12 +269,26 @@ public class ChessboardGenerator {
                     if ( (diagonal && piece instanceof Bishop) ||
                             (!diagonal && piece instanceof Rook) ||
                             (piece instanceof Queen) || //TODO dodać warunek króla
-                            (diagonal && piece instanceof Pawn &&/* n==1 && dy==((Pawn)piece).getDirection()*/(y==kingColumn+1 || y==kingColumn-1) &&dx==-((Pawn)piece).getDirection() /*y-kingRow == -((Pawn)piece).getDirection() && dx != 0 */)) {
-                        //if there was a white piece before it must be a pin
+                            (diagonal && piece instanceof Pawn && (y==kingColumn+1 || y==kingColumn-1) &&dx==-((Pawn)piece).getDirection() )) {
+                        //if there was our color piece before, it must be a pin
                         if(possiblePin!=null) {
-                            //TODO obsługa flagi u pionków
                             possiblePin.setPinned(true);
-                            System.out.println(possiblePin.getName()+"["+possiblePin.getRow()+","+possiblePin.getColumn()+"]"+" jest pinem!");
+
+                            //calculate which direction is going to be blocked and
+                            //set appropriate flags for blocking moves (because its being pinned)
+                            int diff = Math.abs(dx - dy);
+                            if(diff!=1) { // diagonal
+                                if(diff==0) possiblePin.blockDirections(Piece.BlockedDirections.DOWN_UP_DIAGONAL);
+                                else possiblePin.blockDirections(Piece.BlockedDirections.UP_DOWN_DIAGONAL);
+                            }
+                            //vertical/horizontal
+                            else {
+                                if(dx==0) possiblePin.blockDirections(Piece.BlockedDirections.HORIZONTAL);
+                                else possiblePin.blockDirections(Piece.BlockedDirections.VERTICAL);
+                            }
+
+
+                            System.out.println(possiblePin.getName()+"["+possiblePin.getRow()+","+possiblePin.getColumn()+"] jest pinem!");
                         }
                         // if there weren't any pins it must be a check
                         else {
@@ -284,28 +296,31 @@ public class ChessboardGenerator {
                             System.out.println(piece.getName()+" szachuje!");
                         }
                     }
-                    break; //if it was a black piece, anything behind it wont be checking
+                    break; //if it was a black piece, anything behind it won't be checking
                 }
             }
+            if(checks.size()==2) break; //if there are 2 checks only king can make move
         }
         //we must also check knights
-        for(Knight knight: knights) {
-            for(int i = 0, rowMove = -2, columnMove; i < 8; i++){
-                // set column move
-                columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
-                // change current position
-                int row = knight.getRow() + rowMove;
-                int column = knight.getColumn() + columnMove;
-                // add move to an array if is legal
-                if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 )
-                    //HERE WE CHECK FOR CHECK
-                    if(kingColumn==column && kingRow==row) checks.add(knight);
+        if(checks.size()<2) {
+            for (Knight knight : knights) {
+                for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
+                    // set column move
+                    columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
+                    // change current position
+                    int row = knight.getRow() + rowMove;
+                    int column = knight.getColumn() + columnMove;
+                    // add move to an array if is legal
+                    if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
+                        //HERE WE CHECK FOR CHECK
+                        if (kingColumn == column && kingRow == row) checks.add(knight);
 
-                // set row move
-                if(i % 2 != 0){
-                    rowMove++;
-                    if(rowMove == 0)
+                    // set row move
+                    if (i % 2 != 0) {
                         rowMove++;
+                        if (rowMove == 0)
+                            rowMove++;
+                    }
                 }
             }
         }
@@ -313,6 +328,13 @@ public class ChessboardGenerator {
         System.out.println("Checks:");
         for(Piece check: checks) {
             System.out.println(check.getName());
+        }
+    }
+
+    public void unpinAndResetAllDirections() {
+        for(Piece piece: pieces) {
+            piece.setPinned(false);
+            piece.unblockDirections();
         }
     }
 

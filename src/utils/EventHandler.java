@@ -58,6 +58,7 @@ public class EventHandler {
                 rectangles[i][j].setOnMousePressed(event -> {
                     clickedField = rectangles[row][column];
 
+
                     if(!focusedOnPiece) {
                         Piece piece;
                         piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
@@ -133,6 +134,7 @@ public class EventHandler {
                             lastClicked = null;
 
                             //TEST LOCATION
+                            chessboardGenerator.unpinAndResetAllDirections();
                             chessboardGenerator.checkAllPinsAndChecks();
                         }
                         //unfocus
