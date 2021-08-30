@@ -37,13 +37,17 @@ public abstract class Piece {
     }
 
     // get all pseudolegal moves
-    public abstract List<Position> getPossibleMoves(Vector<Piece> pieces);
+    public abstract List<Position> getPossibleMoves(List<Piece> pieces);
 
     // capture handling
     protected void capture(Piece piece, ChessboardGenerator chessboardGenerator){
         if(piece != null){
             ((Group)chessboardGenerator.getRoot()).getChildren().remove(piece.getImage());
             chessboardGenerator.getPieces().remove(piece);
+            if(piece.getColor() == Colors.WHITE)
+                chessboardGenerator.getWhitePieces().remove(piece);
+            else if(piece.getColor() == Colors.BLACK)
+                chessboardGenerator.getBlackPieces().remove(piece);
         }
     }
 
@@ -90,7 +94,7 @@ public abstract class Piece {
         return isNext;
     }
 
-    protected List<Position> getStraightMoves(Vector<Piece> pieces){
+    protected List<Position> getStraightMoves(List<Piece> pieces){
         List<Position> possibleMoves = new ArrayList<>();
 
         // get possible moves from current position to left border
@@ -124,7 +128,7 @@ public abstract class Piece {
         return possibleMoves;
     }
 
-    protected List<Position> getDiagonalMoves(Vector<Piece> pieces){
+    protected List<Position> getDiagonalMoves(List<Piece> pieces){
         List<Position> possibleMoves = new ArrayList<>();
 
         // get possible moves from current position to the top of first diagonal \

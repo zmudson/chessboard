@@ -15,7 +15,7 @@ public class Queen extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(Vector<Piece> pieces){
+    public List<Position> getPossibleMoves(List<Piece> pieces){
 
         // get all straight moves
         List<Position> possibleMoves = getStraightMoves(pieces);

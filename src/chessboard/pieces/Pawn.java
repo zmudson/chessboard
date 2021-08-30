@@ -44,7 +44,7 @@ public class Pawn extends Piece {
             }
         }
 
-        Vector<Piece> pieces = chessboardGenerator.getPieces();
+        List<Piece> pieces = chessboardGenerator.getPieces();
 
         Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
 
@@ -64,11 +64,15 @@ public class Pawn extends Piece {
             // add queen to chessboard
             Piece queen = new Queen(row, column, color);
             pieces.add(queen);
+            if(color == Colors.WHITE)
+                chessboardGenerator.getWhitePieces().add(queen);
+            else if(color == Colors.BLACK)
+                chessboardGenerator.getBlackPieces().add(queen);
             chessboardGenerator.handleImageDraw(queen);
         }
     }
 
-    public List<Position> getPossibleMoves(Vector<Piece> pieces) {
+    public List<Position> getPossibleMoves(List<Piece> pieces) {
 
         List<Position> possiblePositions = new ArrayList<>();
 
