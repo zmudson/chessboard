@@ -26,6 +26,7 @@ public abstract class Piece {
     protected Colors color;
     private ImageView image;
 
+    private boolean isPinned;
 
     public Piece(int row, int column, String name, String filename, double power, Colors color) {
         this.row = row;
@@ -217,5 +218,13 @@ public abstract class Piece {
 
     public void setPower(double power) {
         this.power = power;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        isPinned = pinned;
     }
 }

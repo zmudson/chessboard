@@ -132,4 +132,8 @@ public class Pawn extends Piece {
     public void setIsPossibleToBeCapturedByEnPassant(boolean isPossibleToBeCapturedByEnPassant) {
         this.isPossibleToBeCapturedByEnPassant = isPossibleToBeCapturedByEnPassant;
     }
+
+    public int getDirection() {
+        return direction;
+    }
 }

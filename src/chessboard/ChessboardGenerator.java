@@ -8,7 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import utils.ImageGenerator;
+import utils.MoveHandler;
+import utils.Position;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class ChessboardGenerator {
@@ -29,6 +33,8 @@ public class ChessboardGenerator {
     private Parent root;
     private Node[][] rectangles;
     private Vector<Piece> pieces;
+
+    private Piece.Colors colorToMove = Piece.Colors.WHITE;
 
     //for en pessant
     private static Pawn pawnForEnPessant = null;
@@ -181,6 +187,101 @@ public class ChessboardGenerator {
 
     public static Pawn getPawnAbleToBeCapturedByEnPassant() {
         return pawnForEnPessant;
+    }
+
+    public void checkAllPinsAndChecks() {
+        //which king is going to be checked
+        King king = null;
+        ArrayList<Knight> knights = new ArrayList<>();
+        // looking for the king and knights
+        for(Piece piece : pieces) {
+            if(piece instanceof King && piece.getColor() == colorToMove) {
+                king = (King) piece;
+            }
+            if(piece instanceof Knight && piece.getColor() != colorToMove) {
+                knights.add((Knight) piece);
+            }
+            if(king!=null && knights.size()==2) break;
+        }
+        //list with all checks
+        List<Piece> checks = new ArrayList<>();
+        //the king's position
+        final int kingColumn = king.getColumn();
+        final int kingRow = king.getRow();
+        //loop over every direction
+        for(int dy=-1; dy<=1; dy++) {
+            for(int dx=-1; dx<=1; dx++) {
+                if(dx==0&&dy==0) continue; //there is no such a direction
+                int y = kingColumn;
+                int x = kingRow;
+                Piece possiblePin = null;
+                //loop through the direction
+                //int n=0;
+                while(x>=0 && x<Main.columns && y>=0 && y<=Main.rows) {
+                    x+=dx;
+                    y+=dy;
+                    //n++;
+                    //System.out.println("Sprawdzenie "+x+" "+y);
+                    Piece piece = getPiece(x,y,pieces);
+                    if(piece==null) continue; //skip to the next position
+                    //check for pin. If there was no pin before, this piece could be a pin. If there was a pin before,
+                    // we can end looking for pins and checks (obvious reasons).
+                    if(piece.getColor()==colorToMove) {
+                        if(possiblePin==null) {
+                            possiblePin = piece;
+                            continue;
+                        }
+                        else break;
+                    }
+                     // if dx + dy==0 | 2 => diagonal, ==1 => horizontal
+                    boolean diagonal = Math.abs(dx + dy) != 1;
+                    //check if enemy pieces could attack the king
+                    if ( (diagonal && piece instanceof Bishop) ||
+                            (!diagonal && piece instanceof Rook) ||
+                            (piece instanceof Queen) || //TODO dodać warunek króla
+                            (diagonal && piece instanceof Pawn &&/* n==1 && dy==((Pawn)piece).getDirection()*/(y==kingColumn+1 || y==kingColumn-1) &&dx==-((Pawn)piece).getDirection() /*y-kingRow == -((Pawn)piece).getDirection() && dx != 0 */)) {
+                        //if there was a white piece before it must be a pin
+                        if(possiblePin!=null) {
+                            //TODO obsługa flagi u pionków
+                            possiblePin.setPinned(true);
+                            System.out.println(possiblePin.getName()+"["+possiblePin.getRow()+","+possiblePin.getColumn()+"]"+" jest pinem!");
+                        }
+                        // if there weren't any pins it must be a check
+                        else {
+                            checks.add(piece);
+                            System.out.println(piece.getName()+" szachuje!");
+                        }
+                    }
+                    break; //if it was a black piece, anything behind it wont be checking
+                }
+            }
+        }
+        //we must also check knights
+        for(Knight knight: knights) {
+            for(int i = 0, rowMove = -2, columnMove; i < 8; i++){
+                // set column move
+                columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
+                // change current position
+                int row = knight.getRow() + rowMove;
+                int column = knight.getColumn() + columnMove;
+                // add move to an array if is legal
+                if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 )
+                    //HERE WE CHECK FOR CHECK
+                    if(kingColumn==column && kingRow==row) checks.add(knight);
+
+                // set row move
+                if(i % 2 != 0){
+                    rowMove++;
+                    if(rowMove == 0)
+                        rowMove++;
+                }
+            }
+        }
+        //DEBUG
+        System.out.println("Checks:");
+        for(Piece check: checks) {
+            System.out.println(check.getName());
+        }
     }
 
 }
