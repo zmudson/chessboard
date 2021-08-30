@@ -2,6 +2,8 @@ package chessboard.pieces;
 
 import utils.Move;
 import utils.Position;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bishop extends Piece {
@@ -14,6 +16,7 @@ public class Bishop extends Piece {
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
+        if(!canMove()) return new ArrayList<>();
         return getDiagonalMoves(pieces);
     }
 }

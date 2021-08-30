@@ -38,9 +38,13 @@ public class ChessboardGenerator {
     private ArrayList<Piece> blackPieces;
 
     private Piece.Colors colorToMove = Piece.Colors.WHITE;
+    protected List<Position> fieldsToBlockCheck = new ArrayList<>();
 
     //for en passant
     private static Pawn pawnForEnPassant = null;
+
+    private King whiteKing = null;
+    private King blackKing = null;
 
     public ChessboardGenerator(double width, double height, int rows, int columns, Parent root) {
         this.width = width;
@@ -132,7 +136,8 @@ public class ChessboardGenerator {
         pieces.add(new Knight(0, 1, Piece.Colors.BLACK));
         pieces.add(new Bishop(0, 2, Piece.Colors.BLACK));
         pieces.add(new Queen(0, 3, Piece.Colors.BLACK));
-        pieces.add(new King(0, 4, Piece.Colors.BLACK));
+        blackKing = new King(0, 4, Piece.Colors.BLACK);
+        pieces.add(blackKing);
         pieces.add(new Bishop(0, 5, Piece.Colors.BLACK));
         pieces.add(new Knight(0, 6, Piece.Colors.BLACK));
         pieces.add(new Rook(0, 7, Piece.Colors.BLACK));
@@ -148,7 +153,8 @@ public class ChessboardGenerator {
         pieces.add(new Knight(rows - 1, 1, Piece.Colors.WHITE));
         pieces.add(new Bishop(rows - 1, 2, Piece.Colors.WHITE));
         pieces.add(new Queen(rows - 1, 3, Piece.Colors.WHITE));
-        pieces.add(new King(rows - 1, 4, Piece.Colors.WHITE));
+        whiteKing = new King(rows - 1, 4, Piece.Colors.WHITE);
+        pieces.add(whiteKing);
         pieces.add(new Bishop(rows - 1, 5, Piece.Colors.WHITE));
         pieces.add(new Knight(rows - 1, 6, Piece.Colors.WHITE));
         pieces.add(new Rook(rows - 1, 7, Piece.Colors.WHITE));
@@ -227,9 +233,9 @@ public class ChessboardGenerator {
         King king = null;
         ArrayList<Knight> knights = new ArrayList<>();
 
-        List<Position> fieldsToBlockCheck = new ArrayList<>();
+        fieldsToBlockCheck.clear();
         // looking for the king and knights
-        for(Piece piece : pieces) {
+        /*for(Piece piece : pieces) {
             if(piece instanceof King && piece.getColor() == colorToMove) {
                 king = (King) piece;
             }
@@ -237,7 +243,9 @@ public class ChessboardGenerator {
                 knights.add((Knight) piece);
             }
             if(king!=null && knights.size()==2) break;
-        }
+        }*/
+        if(colorToMove == Piece.Colors.WHITE) king = whiteKing;
+        else king = blackKing;
         //list with all checks
         List<Piece> checks = new ArrayList<>();
         //the king's position
@@ -312,30 +320,54 @@ public class ChessboardGenerator {
                     break; //if it was a black piece, anything behind it won't be checking
                 }
             }
-            if(checks.size()==1) ; //here sending blocked fields
-            else if(checks.size()==2) break; //if there are 2 checks only king can make move
+            if(checks.size()==2) break; //if there are 2 checks only king can make move
         }
-        //we must also check knights
         if(checks.size()<2) {
-            for (Knight knight : knights) {
-                for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
-                    // set column move
-                    columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
-                    // change current position
-                    int row = knight.getRow() + rowMove;
-                    int column = knight.getColumn() + columnMove;
-                    // add move to an array if is legal
-                    if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
-                        //HERE WE CHECK FOR CHECK
-                        if (kingColumn == column && kingRow == row) checks.add(knight);
+            //we must also check knights
+            if (colorToMove == Piece.Colors.WHITE) {
+                for (Piece piece : whitePieces) {
+                    if (piece instanceof Knight) knights.add((Knight) piece);
+                    //if(knights.size()==2) break;
+                }
+            } else for (Piece piece : blackPieces) {
+                if (piece instanceof Knight) knights.add((Knight) piece);
+                //if(knights.size()==2) break;
+            }
 
-                    // set row move
-                    if (i % 2 != 0) {
-                        rowMove++;
-                        if (rowMove == 0)
+
+            if (checks.size() < 2) {
+                for (Knight knight : knights) {
+                    for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
+                        // set column move
+                        columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
+                        // change current position
+                        int row = knight.getRow() + rowMove;
+                        int column = knight.getColumn() + columnMove;
+                        // add move to an array if is legal
+                        if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
+                            //HERE WE CHECK FOR CHECK
+                            if (kingColumn == column && kingRow == row) checks.add(knight);
+
+                        // set row move
+                        if (i % 2 != 0) {
                             rowMove++;
+                            if (rowMove == 0)
+                                rowMove++;
+                        }
                     }
                 }
+            }
+        }
+        else if(checks.size()==2) {
+            if(colorToMove== Piece.Colors.WHITE) {
+                for(Piece piece: whitePieces) {
+                    if(piece==whiteKing) continue;
+                    piece.setCanMove(false);
+                }
+            }
+            else for(Piece piece: blackPieces) {
+                if(piece==blackKing) continue;
+                piece.setCanMove(false);
             }
         }
         //DEBUG
@@ -349,6 +381,7 @@ public class ChessboardGenerator {
         for(Piece piece: pieces) {
             piece.setPinned(false);
             piece.unblockDirections();
+            piece.setCanMove(true);
         }
     }
 

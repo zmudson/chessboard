@@ -35,7 +35,7 @@ public abstract class Piece {
     private ImageView image;
 
     private boolean isPinned;
-    //private HashMap<BlockedDirections, Boolean> blockedDirections = new HashMap<>();
+    private boolean canMove = true;
     protected List<BlockedDirections> blockedDirections = new ArrayList<>();
 
     public Piece(int row, int column, String name, String filename, double power, Colors color) {
@@ -267,4 +267,12 @@ public abstract class Piece {
     public void setPinned(boolean pinned) {
         isPinned = pinned;
     }
+    public boolean canMove() {
+        return canMove;
+    }
+
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
+    }
+
 }

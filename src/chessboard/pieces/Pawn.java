@@ -76,6 +76,8 @@ public class Pawn extends Piece {
 
         List<Move> possiblePositions = new ArrayList<>();
 
+        if(!canMove()) return possiblePositions;
+
         //check positions
         //possible moves for pawn:
         // up, capture and en passant
