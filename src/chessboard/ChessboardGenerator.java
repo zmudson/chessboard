@@ -244,8 +244,18 @@ public class ChessboardGenerator {
             }
             if(king!=null && knights.size()==2) break;
         }*/
-        if(colorToMove == Piece.Colors.WHITE) king = whiteKing;
-        else king = blackKing;
+        List<Piece> ourColorPieces = null;
+        List<Piece> enemyColorPieces = null;
+        if(colorToMove == Piece.Colors.WHITE) {
+            king = whiteKing;
+            ourColorPieces = whitePieces;
+            enemyColorPieces = blackPieces;
+        }
+        else {
+            king = blackKing;
+            ourColorPieces = blackPieces;
+            enemyColorPieces = whitePieces;
+        }
         //list with all checks
         List<Piece> checks = new ArrayList<>();
         //the king's position
@@ -324,18 +334,10 @@ public class ChessboardGenerator {
         }
         if(checks.size()<2) {
             //we must also check knights
-            if (colorToMove == Piece.Colors.WHITE) {
-                for (Piece piece : whitePieces) {
+                for (Piece piece : enemyColorPieces)
                     if (piece instanceof Knight) knights.add((Knight) piece);
-                    //if(knights.size()==2) break;
-                }
-            } else for (Piece piece : blackPieces) {
-                if (piece instanceof Knight) knights.add((Knight) piece);
-                //if(knights.size()==2) break;
-            }
 
 
-            if (checks.size() < 2) {
                 for (Knight knight : knights) {
                     for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
                         // set column move
@@ -356,19 +358,14 @@ public class ChessboardGenerator {
                         }
                     }
                 }
-            }
         }
-        else if(checks.size()==2) {
-            if(colorToMove== Piece.Colors.WHITE) {
-                for(Piece piece: whitePieces) {
-                    if(piece==whiteKing) continue;
+        if(checks.size()==2) {
+            System.out.println("Król musi sie ruszyć");
+                for(Piece piece: ourColorPieces) {
+                    if(piece==king) continue;
                     piece.setCanMove(false);
                 }
-            }
-            else for(Piece piece: blackPieces) {
-                if(piece==blackKing) continue;
-                piece.setCanMove(false);
-            }
+
         }
         //DEBUG
         if(checks.size()>0) System.out.println("Checks:");
