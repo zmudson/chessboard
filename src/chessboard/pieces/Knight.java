@@ -15,8 +15,8 @@ public class Knight extends Piece {
     private static final String filename = "";
     public static final int maxPossibleMovesNumber = 8;
 
-    public Knight(int row, int column, Piece.Colors color) {
-        super(row, column, name, filename, power, color);
+    public Knight(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
+        super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
@@ -34,7 +34,7 @@ public class Knight extends Piece {
             int row = this.row + rowMove;
             int column = this.column + columnMove;
 
-            Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
+            Piece piece = chessboardGenerator.getPiece(row, column);
 
             // add move to an array if is legal
             if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 && MoveHandler.isValid(this, piece))
@@ -47,7 +47,7 @@ public class Knight extends Piece {
                     rowMove++;
             }
         }
-
+        removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }
 }

@@ -1,7 +1,6 @@
 package chessboard;
 
 import chessboard.pieces.*;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,12 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import utils.ImageGenerator;
-import utils.MoveHandler;
+import utils.MoveGenerator;
 import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class ChessboardGenerator {
 
@@ -37,8 +35,13 @@ public class ChessboardGenerator {
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
 
+    private MoveGenerator moveGenerator;
+
     private Piece.Colors colorToMove = Piece.Colors.WHITE;
-    protected List<Position> fieldsToBlockCheck = new ArrayList<>();
+
+    private List<Position> fieldsToBlockCheck = new ArrayList<>();
+
+    private boolean isCheck;
 
     //for en passant
     private static Pawn pawnForEnPassant = null;
@@ -132,35 +135,35 @@ public class ChessboardGenerator {
         // init black pieces
         blackPieces = new ArrayList<>();
 
-        pieces.add(new Rook(0, 0, Piece.Colors.BLACK));
-        pieces.add(new Knight(0, 1, Piece.Colors.BLACK));
-        pieces.add(new Bishop(0, 2, Piece.Colors.BLACK));
-        pieces.add(new Queen(0, 3, Piece.Colors.BLACK));
-        blackKing = new King(0, 4, Piece.Colors.BLACK);
+        pieces.add(new Rook(0, 0, Piece.Colors.BLACK, this));
+        pieces.add(new Knight(0, 1, Piece.Colors.BLACK, this));
+        pieces.add(new Bishop(0, 2, Piece.Colors.BLACK, this));
+        pieces.add(new Queen(0, 3, Piece.Colors.BLACK, this));
+        blackKing = new King(0, 4, Piece.Colors.BLACK, this);
         pieces.add(blackKing);
-        pieces.add(new Bishop(0, 5, Piece.Colors.BLACK));
-        pieces.add(new Knight(0, 6, Piece.Colors.BLACK));
-        pieces.add(new Rook(0, 7, Piece.Colors.BLACK));
+        pieces.add(new Bishop(0, 5, Piece.Colors.BLACK, this));
+        pieces.add(new Knight(0, 6, Piece.Colors.BLACK, this));
+        pieces.add(new Rook(0, 7, Piece.Colors.BLACK, this));
 
         for(int i = 0; i < columns; i++){
-            pieces.add(new Pawn(1, i, Piece.Colors.BLACK));
+            pieces.add(new Pawn(1, i, Piece.Colors.BLACK, this));
         }
 
         // init white pieces
         whitePieces = new ArrayList<>();
 
-        pieces.add(new Rook(rows - 1, 0, Piece.Colors.WHITE));
-        pieces.add(new Knight(rows - 1, 1, Piece.Colors.WHITE));
-        pieces.add(new Bishop(rows - 1, 2, Piece.Colors.WHITE));
-        pieces.add(new Queen(rows - 1, 3, Piece.Colors.WHITE));
-        whiteKing = new King(rows - 1, 4, Piece.Colors.WHITE);
+        pieces.add(new Rook(rows - 1, 0, Piece.Colors.WHITE, this));
+        pieces.add(new Knight(rows - 1, 1, Piece.Colors.WHITE, this));
+        pieces.add(new Bishop(rows - 1, 2, Piece.Colors.WHITE, this));
+        pieces.add(new Queen(rows - 1, 3, Piece.Colors.WHITE, this));
+        whiteKing = new King(rows - 1, 4, Piece.Colors.WHITE, this);
         pieces.add(whiteKing);
-        pieces.add(new Bishop(rows - 1, 5, Piece.Colors.WHITE));
-        pieces.add(new Knight(rows - 1, 6, Piece.Colors.WHITE));
-        pieces.add(new Rook(rows - 1, 7, Piece.Colors.WHITE));
+        pieces.add(new Bishop(rows - 1, 5, Piece.Colors.WHITE, this));
+        pieces.add(new Knight(rows - 1, 6, Piece.Colors.WHITE, this));
+        pieces.add(new Rook(rows - 1, 7, Piece.Colors.WHITE, this));
 
         for(int i = 0; i < columns; i++){
-            pieces.add(new Pawn(rows - 2, i, Piece.Colors.WHITE));
+            pieces.add(new Pawn(rows - 2, i, Piece.Colors.WHITE, this));
         }
 
         for(Piece piece : pieces){
@@ -169,6 +172,8 @@ public class ChessboardGenerator {
             else if (piece.getColor() == Piece.Colors.WHITE)
                 whitePieces.add(piece);
         }
+
+        moveGenerator = new MoveGenerator(pieces, whitePieces, blackPieces);
     }
 
     public Node[][] getRectangles() {
@@ -191,7 +196,7 @@ public class ChessboardGenerator {
 
     // return piece on provided position if it is on it, otherwise return null
     /* consider add this method to utils */
-    public static Piece getPiece(int row, int column, List<Piece> pieces) {
+    public Piece getPiece(int row, int column) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
                 return piece;
@@ -200,8 +205,8 @@ public class ChessboardGenerator {
         return null;
     }
 
-    public static boolean isFieldEmpty(int row, int column, ArrayList<Piece> pieces){
-        return getPiece(row, column, pieces) == null;
+    public boolean isFieldEmpty(int row, int column, ArrayList<Piece> pieces){
+        return getPiece(row, column) == null;
     }
 
     public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
@@ -232,20 +237,10 @@ public class ChessboardGenerator {
         //which king is going to be checked
         King king = null;
         ArrayList<Knight> knights = new ArrayList<>();
+        isCheck = false;
 
         fieldsToBlockCheck.clear();
-        // looking for the king and knights
-        /*for(Piece piece : pieces) {
-            if(piece instanceof King && piece.getColor() == colorToMove) {
-                king = (King) piece;
-            }
-            if(piece instanceof Knight && piece.getColor() != colorToMove) {
-                knights.add((Knight) piece);
-            }
-            if(king!=null && knights.size()==2) break;
-        }*/
-        if(colorToMove == Piece.Colors.WHITE) king = whiteKing;
-        else king = blackKing;
+        king = colorToMove == Piece.Colors.WHITE ? whiteKing : blackKing;
         //list with all checks
         List<Piece> checks = new ArrayList<>();
         //the king's position
@@ -263,7 +258,7 @@ public class ChessboardGenerator {
                     x+=dx;
                     y+=dy;
                     //System.out.println("Sprawdzenie "+x+" "+y);
-                    Piece piece = getPiece(x,y,pieces);
+                    Piece piece = getPiece(x,y);
                     if(piece==null) continue; //skip to the next position
                     //check for pin. If there was no pin before, this piece could be a pin. If there was a pin before,
                     // we can end looking for pins and checks (obvious reasons).
@@ -324,54 +319,46 @@ public class ChessboardGenerator {
         }
         if(checks.size()<2) {
             //we must also check knights
-            if (colorToMove == Piece.Colors.WHITE) {
-                for (Piece piece : whitePieces) {
-                    if (piece instanceof Knight) knights.add((Knight) piece);
-                    //if(knights.size()==2) break;
-                }
-            } else for (Piece piece : blackPieces) {
+
+            ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? whitePieces : blackPieces;
+            for (Piece piece : pieces) {
                 if (piece instanceof Knight) knights.add((Knight) piece);
                 //if(knights.size()==2) break;
             }
 
+            for (Knight knight : knights) {
+                for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
+                    // set column move
+                    columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
+                    // change current position
+                    int row = knight.getRow() + rowMove;
+                    int column = knight.getColumn() + columnMove;
+                    // add move to an array if is legal
+                    if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
+                        //HERE WE CHECK FOR CHECK
+                        if (kingColumn == column && kingRow == row) checks.add(knight);
 
-            if (checks.size() < 2) {
-                for (Knight knight : knights) {
-                    for (int i = 0, rowMove = -2, columnMove; i < 8; i++) {
-                        // set column move
-                        columnMove = (1 + Math.abs(rowMove % 2)) * (i % 2 == 0 ? -1 : 1);
-                        // change current position
-                        int row = knight.getRow() + rowMove;
-                        int column = knight.getColumn() + columnMove;
-                        // add move to an array if is legal
-                        if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
-                            //HERE WE CHECK FOR CHECK
-                            if (kingColumn == column && kingRow == row) checks.add(knight);
-
-                        // set row move
-                        if (i % 2 != 0) {
+                    // set row move
+                    if (i % 2 != 0) {
+                        rowMove++;
+                        if (rowMove == 0)
                             rowMove++;
-                            if (rowMove == 0)
-                                rowMove++;
-                        }
                     }
                 }
             }
         }
         else if(checks.size()==2) {
-            if(colorToMove== Piece.Colors.WHITE) {
-                for(Piece piece: whitePieces) {
-                    if(piece==whiteKing) continue;
+            ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? whitePieces : blackPieces;
+            for (Piece piece : pieces) {
+                if (!(piece instanceof King))
                     piece.setCanMove(false);
-                }
-            }
-            else for(Piece piece: blackPieces) {
-                if(piece==blackKing) continue;
-                piece.setCanMove(false);
             }
         }
         //DEBUG
-        if(checks.size()>0) System.out.println("Checks:");
+        if(checks.size()>0){
+            System.out.println("Checks:");
+            isCheck = true;
+        }
         for(Piece check: checks) {
             System.out.println(check.getName());
         }
@@ -396,6 +383,26 @@ public class ChessboardGenerator {
             if(dx==0) return (Piece.BlockedDirections.HORIZONTAL);
             else return (Piece.BlockedDirections.VERTICAL);
         }
+    }
+
+    public MoveGenerator getMoveGenerator() {
+        return moveGenerator;
+    }
+
+    public void setMoveGenerator(MoveGenerator moveGenerator) {
+        this.moveGenerator = moveGenerator;
+    }
+
+    public List<Position> getFieldsToBlockCheck() {
+        return fieldsToBlockCheck;
+    }
+
+    public void setFieldsToBlockCheck(List<Position> fieldsToBlockCheck) {
+        this.fieldsToBlockCheck = fieldsToBlockCheck;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
     }
 
 }

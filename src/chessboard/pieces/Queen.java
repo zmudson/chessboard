@@ -1,5 +1,6 @@
 package chessboard.pieces;
 
+import chessboard.ChessboardGenerator;
 import utils.Move;
 import utils.Position;
 
@@ -10,8 +11,8 @@ public class Queen extends Piece {
     public static final String name = "queen";
     private static final String filename = "";
 
-    public Queen(int row, int column, Piece.Colors color) {
-        super(row, column, name, filename, power, color);
+    public Queen(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
+        super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
@@ -22,7 +23,7 @@ public class Queen extends Piece {
 
         // append to array all diagonal moves
         possibleMoves.addAll(getDiagonalMoves(pieces));
-
+        removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }
 }

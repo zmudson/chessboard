@@ -14,8 +14,8 @@ public class King extends Piece {
     public static final String name = "king";
     private static final String filename = "";
 
-    public King(int row, int column, Piece.Colors color) {
-        super(row, column, name, filename, power, color);
+    public King(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
+        super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
@@ -25,6 +25,7 @@ public class King extends Piece {
 
         List<Move> possibleMoves = new ArrayList<>();
 
+        /* consider remove this line */
         if(!canMove()) return possibleMoves;
 
         int leftBorder = column - 1;
@@ -45,14 +46,19 @@ public class King extends Piece {
             bottomBorder--;
 
         // iterate through available positions and the legals positions to list
+        Colors enemyColor = color == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+        ArrayList<Move>[][] movesBoard = chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
-                Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
-                if(MoveHandler.isValid(this, piece)) {
-                    possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
+                if(movesBoard[row][column] == null){
+                    Piece piece = chessboardGenerator.getPiece(row, column);
+                    if(MoveHandler.isValid(this, piece)) {
+                        possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
+                    }
                 }
             }
         }
+        removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }
 }

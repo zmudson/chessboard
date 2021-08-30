@@ -1,5 +1,6 @@
 package chessboard.pieces;
 
+import chessboard.ChessboardGenerator;
 import utils.Move;
 import utils.Position;
 
@@ -11,12 +12,14 @@ public class Bishop extends Piece {
     public static final String name = "bishop";
     private static final String filename = "";
 
-    public Bishop(int row, int column, Piece.Colors color) {
-        super(row, column, name, filename, power, color);
+    public Bishop(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
+        super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
         if(!canMove()) return new ArrayList<>();
-        return getDiagonalMoves(pieces);
+        List<Move> possibleMoves = getDiagonalMoves(pieces);
+        removeIllegalMoves(possibleMoves);
+        return possibleMoves;
     }
 }

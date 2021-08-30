@@ -12,6 +12,10 @@ public class Position {
         this.column = column;
     }
 
+    public boolean equals(Position position){
+        return row == position.row && column == position.column;
+    }
+
     public int getRow() {
         return row;
     }
