@@ -87,7 +87,7 @@ public class Pawn extends Piece {
         Piece leftFrontPiece = ChessboardGenerator.getPiece(row + direction, column - 1, pieces);
 
         //move forward, check if forward move is out of the board
-        if(frontPiece == null) {
+        if(frontPiece == null&&(! blockedDirections.contains(BlockedDirections.VERTICAL))) {
             possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column)));
 
             // double move
@@ -100,11 +100,11 @@ public class Pawn extends Piece {
         }
 
         // normal capture
-        if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece)) {
+        if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece) && ! blockedDirections.contains(BlockedDirections.DOWN_UP_DIAGONAL)) {
             possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
         }
 
-        if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece)) {
+        if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece) &&! blockedDirections.contains(BlockedDirections.UP_DOWN_DIAGONAL)) {
             possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
         }
 

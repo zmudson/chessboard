@@ -23,6 +23,8 @@ public class Knight extends Piece {
         
         List<Move> possibleMoves = new ArrayList<>();
 
+        if(isPinned()) return possibleMoves;
+
         for(int i = 0, rowMove = -2, columnMove; i < maxPossibleMovesNumber; i++){
 
             // set column move
