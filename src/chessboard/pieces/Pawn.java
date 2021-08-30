@@ -115,13 +115,30 @@ public class Pawn extends Piece {
             Piece leftPiece = ChessboardGenerator.getPiece(row,column - 1, pieces);
             Piece rightPiece = ChessboardGenerator.getPiece(row,column + 1, pieces);
 
+            //we have to check if doing enpassant creates a check
+            boolean presentKing = false;
+            boolean possibleChecker = false;
+            boolean pawnBeetweenTwo = false;
+            for(int i=0; i<Main.columns; i++) {
+                Piece piece = ChessboardGenerator.getPiece(row, i, pieces);
+                if(piece instanceof King) {
+                    presentKing = true;
+                }
+                else if(piece instanceof Queen || piece instanceof Rook) {
+                    possibleChecker = true;
+                }
+                else if(piece==this&&((presentKing&&!possibleChecker) || (!presentKing&&possibleChecker))) {
+                    pawnBeetweenTwo = true;
+                }
+            }
+
             //left
-            if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
+            if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant() && !(presentKing&&possibleChecker&&pawnBeetweenTwo )) {
                 possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
             }
 
             //right
-            if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
+            if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant() && !(presentKing&&possibleChecker&&pawnBeetweenTwo )) {
                 possiblePositions.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
             }
         }
