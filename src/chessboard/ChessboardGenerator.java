@@ -198,11 +198,11 @@ public class ChessboardGenerator {
     }
 
     public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
-        pawnForEnPassant = pawn;
+        pawnForEnPessant = pawn;
     }
 
     public static Pawn getPawnAbleToBeCapturedByEnPassant() {
-        return pawnForEnPassant;
+        return pawnForEnPessant;
     }
 
     public List<Piece> getWhitePieces() {
