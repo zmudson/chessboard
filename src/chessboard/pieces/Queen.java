@@ -18,6 +18,7 @@ public class Queen extends Piece {
 
         // get all straight moves
         List<Move> possibleMoves = getStraightMoves(pieces);
+        if(!canMove()) return possibleMoves;
 
         // append to array all diagonal moves
         possibleMoves.addAll(getDiagonalMoves(pieces));

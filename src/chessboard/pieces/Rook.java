@@ -3,6 +3,7 @@ package chessboard.pieces;
 import utils.Move;
 import utils.Position;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rook extends Piece {
@@ -17,6 +18,7 @@ public class Rook extends Piece {
     public List<Move> getPossibleMoves(List<Piece> pieces){
         /* TODO */
         // castling
+        if(!canMove()) return new ArrayList<>();
 
         return getStraightMoves(pieces);
     }

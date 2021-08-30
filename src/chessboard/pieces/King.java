@@ -25,6 +25,8 @@ public class King extends Piece {
 
         List<Move> possibleMoves = new ArrayList<>();
 
+        if(!canMove()) return possibleMoves;
+
         int leftBorder = column - 1;
         int rightBorder = column + 1;
         int topBorder = row - 1;
