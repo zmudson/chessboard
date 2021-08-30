@@ -1,12 +1,7 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
-import chessboard.Main;
 import utils.Position;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Bishop extends Piece {
     public static final double power = 300;
@@ -17,7 +12,7 @@ public class Bishop extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(Vector<Piece> pieces){
+    public List<Position> getPossibleMoves(List<Piece> pieces){
         return getDiagonalMoves(pieces);
     }
 }
