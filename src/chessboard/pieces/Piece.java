@@ -4,12 +4,12 @@ import chessboard.ChessboardGenerator;
 import chessboard.Main;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import utils.Move;
 import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public abstract class Piece {
 
@@ -37,7 +37,7 @@ public abstract class Piece {
     }
 
     // get all pseudolegal moves
-    public abstract List<Position> getPossibleMoves(List<Piece> pieces);
+    public abstract List<Move> getPossibleMoves(List<Piece> pieces);
 
     // capture handling
     protected void capture(Piece piece, ChessboardGenerator chessboardGenerator){
@@ -84,18 +84,18 @@ public abstract class Piece {
     }
 
     // add move to possible moves array and return true if next position is available or false otherwise
-    protected boolean getPossibleMove(int row, int column, List<Position> possibleMoves, Piece piece){
+    protected boolean getPossibleMove(int row, int column, List<Move> possibleMoves, Piece piece){
         boolean isNext = false;
         if(MoveHandler.isValid(this, piece)){
-            possibleMoves.add(new Position(row, column));
+            possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
             if(piece == null)
                 isNext = true;
         }
         return isNext;
     }
 
-    protected List<Position> getStraightMoves(List<Piece> pieces){
-        List<Position> possibleMoves = new ArrayList<>();
+    protected List<Move> getStraightMoves(List<Piece> pieces){
+        List<Move> possibleMoves = new ArrayList<>();
 
         // get possible moves from current position to left border
         for(int column = this.column - 1; column >= 0; column--){
@@ -128,8 +128,8 @@ public abstract class Piece {
         return possibleMoves;
     }
 
-    protected List<Position> getDiagonalMoves(List<Piece> pieces){
-        List<Position> possibleMoves = new ArrayList<>();
+    protected List<Move> getDiagonalMoves(List<Piece> pieces){
+        List<Move> possibleMoves = new ArrayList<>();
 
         // get possible moves from current position to the top of first diagonal \
         for(int column = this.column - 1, row = this.row - 1; column >= 0 && row >= 0; column--, row--){

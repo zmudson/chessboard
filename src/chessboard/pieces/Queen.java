@@ -1,10 +1,9 @@
 package chessboard.pieces;
 
+import utils.Move;
 import utils.Position;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Queen extends Piece {
     public static final double power = 900;
@@ -15,10 +14,10 @@ public class Queen extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(List<Piece> pieces){
 
         // get all straight moves
-        List<Position> possibleMoves = getStraightMoves(pieces);
+        List<Move> possibleMoves = getStraightMoves(pieces);
 
         // append to array all diagonal moves
         possibleMoves.addAll(getDiagonalMoves(pieces));

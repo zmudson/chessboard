@@ -2,12 +2,12 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import utils.Move;
 import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class King extends Piece {
     public static final double power = 1000;
@@ -18,12 +18,12 @@ public class King extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(List<Piece> pieces){
         /* TODO */
         // castling
         // check potential check
 
-        List<Position> possibleMoves = new ArrayList<>();
+        List<Move> possibleMoves = new ArrayList<>();
 
         int leftBorder = column - 1;
         int rightBorder = column + 1;
@@ -47,7 +47,7 @@ public class King extends Piece {
             for(int column = leftBorder; column <= rightBorder; column++){
                 Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
                 if(MoveHandler.isValid(this, piece)) {
-                    possibleMoves.add(new Position(row, column));
+                    possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
                 }
             }
         }

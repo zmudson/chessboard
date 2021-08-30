@@ -1,5 +1,6 @@
 package chessboard.pieces;
 
+import utils.Move;
 import utils.Position;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class Bishop extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(List<Piece> pieces){
         return getDiagonalMoves(pieces);
     }
 }

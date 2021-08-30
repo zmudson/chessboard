@@ -2,6 +2,7 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
+import utils.Move;
 import utils.MoveHandler;
 import utils.Position;
 
@@ -18,9 +19,9 @@ public class Knight extends Piece {
         super(row, column, name, filename, power, color);
     }
 
-    public List<Position> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(List<Piece> pieces){
         
-        List<Position> possibleMoves = new ArrayList<>();
+        List<Move> possibleMoves = new ArrayList<>();
 
         for(int i = 0, rowMove = -2, columnMove; i < maxPossibleMovesNumber; i++){
 
@@ -35,7 +36,7 @@ public class Knight extends Piece {
 
             // add move to an array if is legal
             if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 && MoveHandler.isValid(this, piece))
-                possibleMoves.add(new Position(row, column));
+                possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
 
             // set row move
             if(i % 2 != 0){

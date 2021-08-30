@@ -2,7 +2,6 @@ package utils;
 
 import chessboard.ChessboardGenerator;
 import chessboard.Main;
-import chessboard.pieces.Pawn;
 import chessboard.pieces.Piece;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -36,7 +35,7 @@ public class EventHandler {
     // piece focus handling
     private boolean focusedOnPiece = false;
     private Piece currentPiece = null;
-    private List<Position> focusedPiecePositions = new ArrayList<>();
+    private List<Move> focusedPieceMoves = new ArrayList<>();
     private Rectangle lastMovedFromField = null;
     private Rectangle lastMovedToField = null;
 
@@ -80,10 +79,11 @@ public class EventHandler {
                             chessboardGenerator.colorField(row, column, CLICKED_COLOR);
 
                             //get and show available moves
-                            List<Position> positions = piece.getPossibleMoves(chessboardGenerator.getPieces());
-                            focusedPiecePositions = positions;
-                            for(Position pos : positions) {
-                                Rectangle rect = (Rectangle) rectangles[pos.getRow()][pos.getColumn()];
+                            List<Move> moves = piece.getPossibleMoves(chessboardGenerator.getPieces());
+                            focusedPieceMoves = moves;
+                            for(Move move : moves) {
+                                Position position = move.getEndPosition();
+                                Rectangle rect = (Rectangle) rectangles[position.getRow()][position.getColumn()];
                                 rect.setFill(AVAILABLE_MOVE_COLOR);
                             }
 
@@ -95,18 +95,20 @@ public class EventHandler {
                         // handling piece move
                         boolean legalMove = false;
 
-                        for(Position pos : focusedPiecePositions) {
+                        for(Move move : focusedPieceMoves) {
                             //if move is (pseudo)legal
-                            if(pos.getColumn()==column&&pos.getRow()==row) {
+                            Position position = move.getEndPosition();
+                            if(position.getColumn() == column && position.getRow() == row) {
                                 legalMove = true;
                                 break;
                             }
                         }
                         // uncolor
                         chessboardGenerator.colorField(lastClicked, lastColor);
-                        for(Position pos : focusedPiecePositions) {
-                            Color color = getFieldColor(pos.getRow(),pos.getColumn());
-                            chessboardGenerator.colorField(pos.getRow(), pos.getColumn(), color);
+                        for(Move move : focusedPieceMoves) {
+                            Position position = move.getEndPosition();
+                            Color color = getFieldColor(position.getRow(),position.getColumn());
+                            chessboardGenerator.colorField(position.getRow(), position.getColumn(), color);
                         }
                         //make sure that last colors are showed
                         if(lastMovedToField!=null) {
