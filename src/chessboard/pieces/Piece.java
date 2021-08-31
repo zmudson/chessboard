@@ -110,8 +110,6 @@ public abstract class Piece {
 
         // handle change of piece and his image
         changePosition(row, column);
-        chessboardGenerator.unpinAndResetAllDirections();
-        chessboardGenerator.checkAllPinsAndChecks();
     }
 
     // add move to possible moves array and return true if next position is available or false otherwise
