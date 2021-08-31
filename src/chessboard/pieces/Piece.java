@@ -9,7 +9,6 @@ import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class Piece {
@@ -117,13 +116,13 @@ public abstract class Piece {
         boolean isNext = false;
         if(MoveHandler.isValid(this, piece)){
             possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
-            if(piece == null)
-                isNext = true;
+            isNext = true;
         }
         return isNext;
     }
 
-    protected List<Move> getStraightMoves(List<Piece> pieces){
+    protected List<Move> getStraightMoves(){
+
         List<Move> possibleMoves = new ArrayList<>();
 
         //if horizontal are possible
@@ -291,6 +290,10 @@ public abstract class Piece {
 
     public void setCanMove(boolean canMove) {
         this.canMove = canMove;
+    }
+
+    public ChessboardGenerator getChessboardGenerator(){
+        return chessboardGenerator;
     }
 
 }

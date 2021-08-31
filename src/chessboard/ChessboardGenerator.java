@@ -182,7 +182,7 @@ public class ChessboardGenerator {
                 whitePieces.add(piece);
         }
 
-        moveGenerator = new MoveGenerator(pieces, whitePieces, blackPieces);
+        moveGenerator = new MoveGenerator(whitePieces, blackPieces);
     }
 
     public Node[][] getRectangles() {

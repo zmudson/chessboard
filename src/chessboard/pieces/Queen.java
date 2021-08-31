@@ -2,7 +2,6 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import utils.Move;
-import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Queen extends Piece {
 
         if(!canMove()) return new ArrayList<>();
         // get all straight moves
-        List<Move> possibleMoves = getStraightMoves(pieces);
+        List<Move> possibleMoves = getStraightMoves();
         // append to array all diagonal moves
         possibleMoves.addAll(getDiagonalMoves(pieces));
         removeIllegalMoves(possibleMoves);
