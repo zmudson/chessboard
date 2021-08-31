@@ -346,7 +346,11 @@ public class ChessboardGenerator {
                     // add move to an array if is legal
                     if (row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1)
                         //HERE WE CHECK FOR CHECK
-                        if (kingColumn == column && kingRow == row) checks.add(knight);
+                        if (kingColumn == column && kingRow == row) {
+                            checks.add(knight);
+                            //and add possibility to beat the knight
+                            fieldsToBlockCheck.add(new Position(knight.getRow(), knight.getColumn()));
+                        }
 
                     // set row move
                     if (i % 2 != 0) {
