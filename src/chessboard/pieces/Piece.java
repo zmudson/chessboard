@@ -116,7 +116,7 @@ public abstract class Piece {
         boolean isNext = false;
         if(MoveHandler.isValid(this, piece)){
             possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
-            if(piece == null || (color != chessboardGenerator.getColorToMove() && piece instanceof  King))
+            if(piece == null || (color != chessboardGenerator.getColorToMove() && piece instanceof King && color != piece.getColor()))
                 isNext = true;
         }
         return isNext;
