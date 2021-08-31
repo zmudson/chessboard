@@ -61,7 +61,7 @@ public class EventHandler {
 
                     if(!focusedOnPiece) {
                         Piece piece;
-                        piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+                        piece = chessboardGenerator.getPiece(row, column);
 
                         //check if it is possile to color rectangle
                         //color only rectangles with pieces on it
@@ -118,7 +118,7 @@ public class EventHandler {
                         //if move is possible then make move and color it
                         if(legalMove) {
 
-                            currentPiece.move(row, column, chessboardGenerator);
+                            currentPiece.move(row, column);
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {
@@ -132,10 +132,6 @@ public class EventHandler {
                             lastMovedFromField = lastClicked;
                             lastMovedToField = (Rectangle) rectangles[row][column];
                             lastClicked = null;
-
-                            //TEST LOCATION
-                            chessboardGenerator.unpinAndResetAllDirections();
-                            chessboardGenerator.checkAllPinsAndChecks();
                         }
                         //unfocus
                         focusedOnPiece = false;

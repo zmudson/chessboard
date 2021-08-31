@@ -9,7 +9,6 @@ import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class Piece {
@@ -38,20 +37,39 @@ public abstract class Piece {
     private boolean canMove = true;
     protected List<BlockedDirections> blockedDirections = new ArrayList<>();
 
-    public Piece(int row, int column, String name, String filename, double power, Colors color) {
+    protected ChessboardGenerator chessboardGenerator;
+
+    public Piece(int row, int column, String name, String filename, double power, Colors color, ChessboardGenerator chessboardGenerator) {
         this.row = row;
         this.column = column;
         this.name = name;
         this.filename = filename;
         this.power = power;
         this.color = color;
+        this.chessboardGenerator = chessboardGenerator;
+    }
+
+    protected void removeIllegalMoves(List<Move> possibleMoves){
+        if(chessboardGenerator.isCheck()){
+            for(Move move : possibleMoves){
+                boolean remove = true;
+                for(Position position : chessboardGenerator.getFieldsToBlockCheck()){
+                    if(move.getEndPosition().equals(position)){
+                        remove = false;
+                        break;
+                    }
+                }
+                if(remove)
+                    possibleMoves.remove(move);
+            }
+        }
     }
 
     // get all pseudolegal moves
     public abstract List<Move> getPossibleMoves(List<Piece> pieces);
 
     // capture handling
-    protected void capture(Piece piece, ChessboardGenerator chessboardGenerator){
+    protected void capture(Piece piece){
         if(piece != null){
             ((Group)chessboardGenerator.getRoot()).getChildren().remove(piece.getImage());
             chessboardGenerator.getPieces().remove(piece);
@@ -80,18 +98,20 @@ public abstract class Piece {
     }
 
     // move piece on different field and update his image position
-    public void move(int row, int column, ChessboardGenerator chessboardGenerator){
+    public void move(int row, int column){
 
         // handle en passant
         unsetEnPassant();
 
         // capture handling
-        Piece piece = ChessboardGenerator.getPiece(row, column, chessboardGenerator.getPieces());
+        Piece piece = chessboardGenerator.getPiece(row, column);
         if(piece != null)
-            capture(piece, chessboardGenerator);
+            capture(piece);
 
         // handle change of piece and his image
         changePosition(row, column);
+        chessboardGenerator.unpinAndResetAllDirections();
+        chessboardGenerator.checkAllPinsAndChecks();
     }
 
     // add move to possible moves array and return true if next position is available or false otherwise
@@ -112,14 +132,14 @@ public abstract class Piece {
         if(! blockedDirections.contains(BlockedDirections.HORIZONTAL)) {
             // get possible moves from current position to left border
             for(int column = this.column - 1; column >= 0; column--){
-                Piece piece = ChessboardGenerator.getPiece(this.row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(this.row, column);
                 if(!getPossibleMove(this.row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to right border
             for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                Piece piece = ChessboardGenerator.getPiece(this.row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(this.row, column);
                 if(!getPossibleMove(this.row, column, possibleMoves, piece))
                     break;
             }
@@ -128,14 +148,14 @@ public abstract class Piece {
         if(! blockedDirections.contains(BlockedDirections.VERTICAL)) {
             // get possible moves from current position to top border
             for(int row = this.row - 1; row >= 0; row--){
-                Piece piece = ChessboardGenerator.getPiece(row, this.column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, this.column);
                 if(!getPossibleMove(row, this.column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to bottom border
             for(int row = this.row + 1; row <= Main.rows - 1; row++){
-                Piece piece = ChessboardGenerator.getPiece(row, this.column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, this.column);
                 if(!getPossibleMove(row, this.column, possibleMoves, piece))
                     break;
             }
@@ -154,14 +174,14 @@ public abstract class Piece {
 
             // get possible moves from current position to the top of first diagonal \
             for (int column = this.column - 1, row = this.row - 1; column >= 0 && row >= 0; column--, row--) {
-                Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to the bottom of first diagonal \
             for (int column = this.column + 1, row = this.row + 1; column <= Main.columns - 1 && row <= Main.columns - 1; column++, row++) {
-                Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
@@ -171,14 +191,14 @@ public abstract class Piece {
 
             // get possible moves from current position to the top of second diagonal /
             for (int column = this.column + 1, row = this.row - 1; column <= Main.columns - 1 && row >= 0; column++, row--) {
-                Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to the bottom of second diagonal /
             for (int column = this.column - 1, row = this.row + 1; column >= 0 && row <= Main.rows - 1; column--, row++) {
-                Piece piece = ChessboardGenerator.getPiece(row, column, pieces);
+                Piece piece = chessboardGenerator.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
