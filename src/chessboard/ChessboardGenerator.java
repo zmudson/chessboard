@@ -240,7 +240,9 @@ public class ChessboardGenerator {
         isCheck = false;
 
         fieldsToBlockCheck.clear();
+
         king = colorToMove == Piece.Colors.WHITE ? whiteKing : blackKing;
+
         //list with all checks
         List<Piece> checks = new ArrayList<>();
         //the king's position
@@ -319,8 +321,7 @@ public class ChessboardGenerator {
         }
         if(checks.size()<2) {
             //we must also check knights
-
-            ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? whitePieces : blackPieces;
+            ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? blackPieces : whitePieces;
             for (Piece piece : pieces) {
                 if (piece instanceof Knight) knights.add((Knight) piece);
                 //if(knights.size()==2) break;
@@ -345,14 +346,14 @@ public class ChessboardGenerator {
                             rowMove++;
                     }
                 }
-            }
         }
         else if(checks.size()==2) {
             ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? whitePieces : blackPieces;
             for (Piece piece : pieces) {
-                if (!(piece instanceof King))
+                if (piece != king))
                     piece.setCanMove(false);
             }
+
         }
         //DEBUG
         if(checks.size()>0){
