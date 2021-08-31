@@ -64,7 +64,7 @@ public class EventHandler {
                         piece = chessboardGenerator.getPiece(row, column);
 
                         // can't move if it is not this piece turn
-                        if(piece.getColor() != chessboardGenerator.getColorToMove())
+                        if(piece != null && piece.getColor() != chessboardGenerator.getColorToMove())
                             return;
 
                         //check if it is possile to color rectangle
