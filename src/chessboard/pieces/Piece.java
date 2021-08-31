@@ -9,6 +9,7 @@ import utils.MoveHandler;
 import utils.Position;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class Piece {
@@ -50,8 +51,8 @@ public abstract class Piece {
     }
 
     protected void removeIllegalMoves(List<Move> possibleMoves){
-        if(chessboardGenerator.isCheck()){
-            for(Move move : possibleMoves){
+        if(chessboardGenerator.isCheck() && color == chessboardGenerator.getColorToMove()){
+            possibleMoves.removeIf(move -> {
                 boolean remove = true;
                 for(Position position : chessboardGenerator.getFieldsToBlockCheck()){
                     if(move.getEndPosition().equals(position)){
@@ -59,9 +60,8 @@ public abstract class Piece {
                         break;
                     }
                 }
-                if(remove)
-                    possibleMoves.remove(move);
-            }
+                return remove;
+            });
         }
     }
 

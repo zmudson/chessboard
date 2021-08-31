@@ -82,40 +82,28 @@ public class Pawn extends Piece {
         //possible moves for pawn:
         // up, capture and en passant
 
-        Piece frontPiece = chessboardGenerator.getPiece(row + direction, column);
+        if(color == chessboardGenerator.getColorToMove()){
+            Piece frontPiece = chessboardGenerator.getPiece(row + direction, column);
 
-        //even if position is out of the board pieces will be null
-        Piece rightFrontPiece = chessboardGenerator.getPiece(row + direction, column + 1);
-        Piece leftFrontPiece = chessboardGenerator.getPiece(row + direction, column - 1);
+            //move forward, check if forward move is out of the board
+            if(frontPiece == null&&(! blockedDirections.contains(BlockedDirections.VERTICAL))) {
+                possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column)));
 
-        //move forward, check if forward move is out of the board
-        if(frontPiece == null&&(! blockedDirections.contains(BlockedDirections.VERTICAL))) {
-            possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column)));
-
-            // double move
-            if(!moved) {
-                Piece doubleForwardPiece = chessboardGenerator.getPiece(row + 2 * direction, column);
-                if(doubleForwardPiece == null) {
-                    possibleMoves.add(new Move(this, getPosition(), new Position(row + 2 * direction, column)));
+                // double move
+                if(!moved) {
+                    Piece doubleForwardPiece = chessboardGenerator.getPiece(row + 2 * direction, column);
+                    if(doubleForwardPiece == null) {
+                        possibleMoves.add(new Move(this, getPosition(), new Position(row + 2 * direction, column)));
+                    }
                 }
             }
-        }
 
-        // normal capture
-        if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece) && ! blockedDirections.contains(BlockedDirections.DOWN_UP_DIAGONAL)) {
-            possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
-        }
+            // check if en passant is possible
+            if(row == enPassantLineNumber || row == Main.rows - 1 - enPassantLineNumber){
 
-        if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece) &&! blockedDirections.contains(BlockedDirections.UP_DOWN_DIAGONAL)) {
-            possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
-        }
-
-        // check if en passant is possible
-        if(row == enPassantLineNumber || row == Main.rows - 1 - enPassantLineNumber){
-
-            //en passant
-            Piece leftPiece = chessboardGenerator.getPiece(row,column - 1);
-            Piece rightPiece = chessboardGenerator.getPiece(row,column + 1);
+                //en passant
+                Piece leftPiece = chessboardGenerator.getPiece(row,column - 1);
+                Piece rightPiece = chessboardGenerator.getPiece(row,column + 1);
 
 //            we have to check if doing en passant creates a check
 //            boolean presentKing = false;
@@ -134,52 +122,71 @@ public class Pawn extends Piece {
 //                }
 //            }
 
-            //left
-            if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
-                boolean canBePinned = false;
-                boolean add = true;
-                for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                    if(chessboardGenerator.getPiece(row, column) instanceof King){
-                        canBePinned = true;
-                        break;
-                    }
-                }
-                if(canBePinned){
-                    for(int column = this.column - 1; column >= 0; column--){
-                        Piece piece = chessboardGenerator.getPiece(row, column);
-                        if(piece instanceof Rook || piece instanceof Queen){
-                            add = false;
+                //left
+                if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
+                    boolean canBePinned = false;
+                    boolean add = true;
+                    for(int column = this.column + 1; column <= Main.columns - 1; column++){
+                        if(chessboardGenerator.getPiece(row, column) instanceof King){
+                            canBePinned = true;
                             break;
                         }
                     }
+                    if(canBePinned){
+                        for(int column = this.column - 1; column >= 0; column--){
+                            Piece piece = chessboardGenerator.getPiece(row, column);
+                            if(piece instanceof Rook || piece instanceof Queen){
+                                add = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(add)
+                        possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
                 }
-                if(add)
-                    possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
+
+                //right
+                else if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
+                    boolean canBePinned = false;
+                    boolean add = true;
+                    for(int column = this.column - 1; column >= 0; column--){
+                        if(chessboardGenerator.getPiece(row, column) instanceof King){
+                            canBePinned = true;
+                            break;
+                        }
+                    }
+                    if(canBePinned){
+                        for(int column = this.column + 1; column <= Main.columns - 1; column++){
+                            Piece piece = chessboardGenerator.getPiece(row, column);
+                            if(piece instanceof Rook || piece instanceof Queen){
+                                add = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(add)
+                        possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
+                }
+            }
+            //even if position is out of the board pieces will be null
+            Piece rightFrontPiece = chessboardGenerator.getPiece(row + direction, column + 1);
+            Piece leftFrontPiece = chessboardGenerator.getPiece(row + direction, column - 1);
+
+            // normal capture
+            if(rightFrontPiece != null && MoveHandler.isValid(this, rightFrontPiece) && ! blockedDirections.contains(BlockedDirections.DOWN_UP_DIAGONAL)) {
+                possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
             }
 
-            //right
-            else if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
-                boolean canBePinned = false;
-                boolean add = true;
-                for(int column = this.column - 1; column >= 0; column--){
-                    if(chessboardGenerator.getPiece(row, column) instanceof King){
-                        canBePinned = true;
-                        break;
-                    }
-                }
-                if(canBePinned){
-                    for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                        Piece piece = chessboardGenerator.getPiece(row, column);
-                        if(piece instanceof Rook || piece instanceof Queen){
-                            add = false;
-                            break;
-                        }
-                    }
-                }
-                if(add)
-                    possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
+            if(leftFrontPiece != null && MoveHandler.isValid(this, leftFrontPiece) &&! blockedDirections.contains(BlockedDirections.UP_DOWN_DIAGONAL)) {
+                possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
             }
+        }else{
+            if(column - 1 >= 0)
+                possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
+            if(column + 1 <= Main.rows - 1)
+                possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
         }
+
         removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }

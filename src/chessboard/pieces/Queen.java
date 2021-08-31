@@ -4,6 +4,7 @@ import chessboard.ChessboardGenerator;
 import utils.Move;
 import utils.Position;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Queen extends Piece {
@@ -17,10 +18,9 @@ public class Queen extends Piece {
 
     public List<Move> getPossibleMoves(List<Piece> pieces){
 
+        if(!canMove()) return new ArrayList<>();
         // get all straight moves
         List<Move> possibleMoves = getStraightMoves(pieces);
-        if(!canMove()) return possibleMoves;
-
         // append to array all diagonal moves
         possibleMoves.addAll(getDiagonalMoves(pieces));
         removeIllegalMoves(possibleMoves);

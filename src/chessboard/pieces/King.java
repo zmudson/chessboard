@@ -59,7 +59,6 @@ public class King extends Piece {
                 }
             }
         }
-        removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }
 }
