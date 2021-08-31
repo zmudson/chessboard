@@ -2,7 +2,6 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import utils.Move;
-import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class Rook extends Piece {
         /* TODO */
         // castling
         if(!canMove()) return new ArrayList<>();
-        List<Move> possibleMoves = getStraightMoves(pieces);
+        List<Move> possibleMoves = getStraightMoves();
         removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }

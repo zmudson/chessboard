@@ -8,14 +8,12 @@ import java.util.List;
 
 public class MoveGenerator {
 
-    private ArrayList<Piece> pieces;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
 
     private ArrayList<Move>[][] movesBoard;
 
-    public MoveGenerator(ArrayList<Piece> pieces, ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces) {
-        this.pieces = pieces;
+    public MoveGenerator(ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces) {
         this.whitePieces = whitePieces;
         this.blackPieces = blackPieces;
         movesBoard = new ArrayList[Main.rows][Main.columns];
@@ -46,8 +44,7 @@ public class MoveGenerator {
     private void clearBoard(){
         for(int row = 0; row < Main.rows; row++){
             for(int column = 0; column < Main.columns; column++){
-                if(movesBoard[row][column] != null)
-                    movesBoard[row][column].clear();
+                movesBoard[row][column] = null;
             }
         }
     }
