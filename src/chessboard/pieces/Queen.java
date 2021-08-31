@@ -15,13 +15,13 @@ public class Queen extends Piece {
         super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
-    public List<Move> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(){
 
         if(!canMove()) return new ArrayList<>();
         // get all straight moves
         List<Move> possibleMoves = getStraightMoves();
         // append to array all diagonal moves
-        possibleMoves.addAll(getDiagonalMoves(pieces));
+        possibleMoves.addAll(getDiagonalMoves());
         removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }

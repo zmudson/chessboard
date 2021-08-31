@@ -26,7 +26,7 @@ public class MoveGenerator {
         clearBoard();
 
         for (Piece piece : pieces){
-            List<Move> possibleMoves = piece.getPossibleMoves(pieces);
+            List<Move> possibleMoves = piece.getPossibleMoves();
             for(Move move : possibleMoves){
                 Position position = move.getEndPosition();
                 ArrayList<Move> movesList = movesBoard[position.getRow()][position.getColumn()];

@@ -2,7 +2,6 @@ package chessboard.pieces;
 
 import chessboard.ChessboardGenerator;
 import utils.Move;
-import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,9 @@ public class Bishop extends Piece {
         super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
-    public List<Move> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(){
         if(!canMove()) return new ArrayList<>();
-        List<Move> possibleMoves = getDiagonalMoves(pieces);
+        List<Move> possibleMoves = getDiagonalMoves();
         removeIllegalMoves(possibleMoves);
         return possibleMoves;
     }
