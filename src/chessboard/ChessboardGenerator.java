@@ -346,11 +346,12 @@ public class ChessboardGenerator {
                             rowMove++;
                     }
                 }
+            }
         }
         else if(checks.size()==2) {
             ArrayList<Piece> pieces = colorToMove == Piece.Colors.WHITE ? whitePieces : blackPieces;
             for (Piece piece : pieces) {
-                if (piece != king))
+                if (piece != king)
                     piece.setCanMove(false);
             }
 
@@ -363,6 +364,7 @@ public class ChessboardGenerator {
         for(Piece check: checks) {
             System.out.println(check.getName());
         }
+
     }
 
     public void unpinAndResetAllDirections() {
@@ -407,3 +409,4 @@ public class ChessboardGenerator {
     }
 
 }
+
