@@ -12,37 +12,43 @@ public class MoveGenerator {
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
 
+    private ArrayList<Move>[][] movesBoard;
+
     public MoveGenerator(ArrayList<Piece> pieces, ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces) {
         this.pieces = pieces;
         this.whitePieces = whitePieces;
         this.blackPieces = blackPieces;
+        movesBoard = new ArrayList[Main.rows][Main.columns];
     }
 
     public ArrayList<Move>[][] generateMoves(Piece.Colors color){
-        ArrayList<Piece> pieces = null;
 
-        if(color == Piece.Colors.WHITE)
-            pieces = whitePieces;
-        else if(color == Piece.Colors.BLACK)
-            pieces = blackPieces;
+        ArrayList<Piece> pieces = color == Piece.Colors.WHITE ? whitePieces : blackPieces;
 
-        Object[][] movesBoard = new Object[Main.rows][Main.columns];
+        clearBoard();
 
-        if(pieces != null){
-            for (Piece piece : pieces){
-                List<Move> possibleMoves = piece.getPossibleMoves(pieces);
-                for(Move move : possibleMoves){
-                    Position position = move.getEndPosition();
-                    ArrayList<Move> movesList = (ArrayList<Move>) movesBoard[position.getRow()][position.getColumn()];
-                    if(movesList == null){
-                        movesBoard[piece.getRow()][piece.getColumn()] = new ArrayList<Move>();
-                        movesList = (ArrayList<Move>) movesBoard[piece.getRow()][piece.getColumn()];
-                    }
-                    movesList.add(move);
+        for (Piece piece : pieces){
+            List<Move> possibleMoves = piece.getPossibleMoves(pieces);
+            for(Move move : possibleMoves){
+                Position position = move.getEndPosition();
+                ArrayList<Move> movesList = movesBoard[position.getRow()][position.getColumn()];
+                if(movesList == null){
+                    movesList = new ArrayList<>();
+                    movesBoard[position.getRow()][position.getColumn()] = movesList;
                 }
+                movesList.add(move);
             }
         }
 
-        return (ArrayList<Move>[][])movesBoard;
+        return movesBoard;
+    }
+
+    private void clearBoard(){
+        for(int row = 0; row < Main.rows; row++){
+            for(int column = 0; column < Main.columns; column++){
+                if(movesBoard[row][column] != null)
+                    movesBoard[row][column].clear();
+            }
+        }
     }
 }

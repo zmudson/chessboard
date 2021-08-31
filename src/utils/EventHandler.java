@@ -63,6 +63,10 @@ public class EventHandler {
                         Piece piece;
                         piece = chessboardGenerator.getPiece(row, column);
 
+                        // can't move if it is not this piece turn
+                        if(piece.getColor() != chessboardGenerator.getColorToMove())
+                            return;
+
                         //check if it is possile to color rectangle
                         //color only rectangles with pieces on it
 
@@ -118,7 +122,8 @@ public class EventHandler {
                         //if move is possible then make move and color it
                         if(legalMove) {
 
-                            currentPiece.move(row, column);
+                            // make turn
+                            chessboardGenerator.play(row, column, currentPiece);
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {

@@ -70,9 +70,6 @@ public class Pawn extends Piece {
                 chessboardGenerator.getBlackPieces().add(queen);
             chessboardGenerator.handleImageDraw(queen);
         }
-
-        chessboardGenerator.unpinAndResetAllDirections();
-        chessboardGenerator.checkAllPinsAndChecks();
     }
 
     public List<Move> getPossibleMoves(List<Piece> pieces) {

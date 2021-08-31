@@ -60,6 +60,15 @@ public class ChessboardGenerator {
         rectangles = new Node[rows][columns];
     }
 
+    public void play(int row, int column, Piece piece){
+        if(colorToMove == piece.getColor()){
+            piece.move(row, column);
+            colorToMove = colorToMove == Piece.Colors.WHITE ? Piece.Colors.BLACK : Piece.Colors.WHITE;
+            unpinAndResetAllDirections();
+            checkAllPinsAndChecks();
+        }
+    }
+
     // create chessboard fields and color them
     public void generateChessboard(){
         double rectangleWidth = width / columns;
@@ -406,6 +415,10 @@ public class ChessboardGenerator {
 
     public boolean isCheck() {
         return isCheck;
+    }
+
+    public Piece.Colors getColorToMove() {
+        return colorToMove;
     }
 
 }
