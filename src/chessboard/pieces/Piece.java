@@ -65,7 +65,7 @@ public abstract class Piece {
     }
 
     // get all pseudolegal moves
-    public abstract List<Move> getPossibleMoves(List<Piece> pieces);
+    public abstract List<Move> getPossibleMoves();
 
     // capture handling
     protected void capture(Piece piece){
@@ -116,7 +116,8 @@ public abstract class Piece {
         boolean isNext = false;
         if(MoveHandler.isValid(this, piece)){
             possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
-            isNext = true;
+            if(piece == null || (color != chessboardGenerator.getColorToMove() && piece instanceof  King))
+                isNext = true;
         }
         return isNext;
     }
@@ -161,7 +162,7 @@ public abstract class Piece {
         return possibleMoves;
     }
 
-    protected List<Move> getDiagonalMoves(List<Piece> pieces){
+    protected List<Move> getDiagonalMoves(){
         List<Move> possibleMoves = new ArrayList<>();
 
 

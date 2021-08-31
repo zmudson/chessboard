@@ -72,7 +72,7 @@ public class Pawn extends Piece {
         }
     }
 
-    public List<Move> getPossibleMoves(List<Piece> pieces) {
+    public List<Move> getPossibleMoves() {
 
         List<Move> possibleMoves = new ArrayList<>();
 

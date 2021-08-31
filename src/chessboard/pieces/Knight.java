@@ -19,7 +19,7 @@ public class Knight extends Piece {
         super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
-    public List<Move> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(){
         
         List<Move> possibleMoves = new ArrayList<>();
 

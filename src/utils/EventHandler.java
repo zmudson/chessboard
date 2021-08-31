@@ -82,7 +82,7 @@ public class EventHandler {
                             chessboardGenerator.colorField(row, column, CLICKED_COLOR);
 
                             //get and show available moves
-                            List<Move> moves = piece.getPossibleMoves(chessboardGenerator.getPieces());
+                            List<Move> moves = piece.getPossibleMoves();
                             focusedPieceMoves = moves;
                             for(Move move : moves) {
                                 Position position = move.getEndPosition();

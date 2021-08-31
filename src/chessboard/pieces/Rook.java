@@ -15,7 +15,7 @@ public class Rook extends Piece {
         super(row, column, name, filename, power, color, chessboardGenerator);
     }
 
-    public List<Move> getPossibleMoves(List<Piece> pieces){
+    public List<Move> getPossibleMoves(){
         /* TODO */
         // castling
         if(!canMove()) return new ArrayList<>();
