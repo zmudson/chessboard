@@ -41,6 +41,10 @@ public class MoveGenerator {
         return movesBoard;
     }
 
+    public boolean hasFieldMoves(int row, int column){
+        return movesBoard[row][column] != null && movesBoard[row][column].size() > 0;
+    }
+
     private void clearBoard(){
         for(int row = 0; row < Main.rows; row++){
             for(int column = 0; column < Main.columns; column++){
