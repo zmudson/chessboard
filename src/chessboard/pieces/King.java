@@ -54,37 +54,50 @@ public class King extends Piece {
         else if(row == Main.rows - 1)
             bottomBorder--;
 
-        //castling
-        if(!hasMoved&&!chessboardGenerator.isCheck()) {
-            rookRight = chessboardGenerator.getPiece(row, Main.columns - 1);
-            rookLeft = chessboardGenerator.getPiece(row, 0);
-            //short
-            //not null condition because intelliJ said so
-            if (rookRight instanceof Rook && ((Rook) rookRight).canCastle()) {
-                if (chessboardGenerator.getPiece(row, column + 1)==null && (chessboardGenerator.getPiece(row, column + 2) ==null)) {
-                    castlingRightPosition = new Position(row, column+2);
-                    possibleMoves.add(new Move(this, this.getPosition(),castlingRightPosition));
-                    canCastleNow = true;
-                }
-            }
-            //long
-            if(rookLeft instanceof Rook && ((Rook)rookLeft).canCastle()) {
-                if(chessboardGenerator.getPiece(row, column-1)==null &&chessboardGenerator.getPiece(row, column-2)==null && chessboardGenerator.getPiece(row, column-3)==null) {
-                    castlingLeftPosition = new Position(row, column-2);
-                    possibleMoves.add(new Move(this, this.getPosition(),castlingLeftPosition));
-                    canCastleNow = true;
-                    //check validity
-                }
-            }
-        }
 
         // iterate through available positions and the legals positions to list
         Colors enemyColor = color == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
         ArrayList[][] movesBoard = null;
-        if(color == chessboardGenerator.getColorToMove())
+        if(color == chessboardGenerator.getColorToMove()) {
             movesBoard = chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
 
-        //castling pt2
+            //castling
+            if (!hasMoved && !chessboardGenerator.isCheck()) {
+                rookRight = chessboardGenerator.getPiece(row, Main.columns - 1);
+                rookLeft = chessboardGenerator.getPiece(row, 0);
+                //short
+                //not null condition because intelliJ said so
+                if (rookRight instanceof Rook && ((Rook) rookRight).canCastle()) {
+                    boolean isCastlingPossible = true;
+                    for (int i = 1; i <= 2; i++) {
+                        if (!(chessboardGenerator.getPiece(row, column + i) == null && movesBoard[row][column + i] == null)) {
+                            isCastlingPossible = false;
+                            break;
+                        }
+                    }
+                    if (isCastlingPossible) {
+                        castlingRightPosition = new Position(row, column + 2);
+                        possibleMoves.add(new Move(this, this.getPosition(), castlingRightPosition));
+                        canCastleNow = true;
+                    }
+                }
+                //long
+                if (rookLeft instanceof Rook && ((Rook) rookLeft).canCastle()) {
+                    boolean isCastlingPossible = true;
+                    for (int i = 1; i <= 3; i++) {
+                        if (!(chessboardGenerator.getPiece(row, column - i) == null && movesBoard[row][column - i] == null)) {
+                            isCastlingPossible = false;
+                            break;
+                        }
+                    }
+                    if (isCastlingPossible) {
+                        castlingLeftPosition = new Position(row, column - 2);
+                        possibleMoves.add(new Move(this, this.getPosition(),castlingLeftPosition));
+                        canCastleNow = true;
+                    }
+                }
+            }
+        }
 
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
