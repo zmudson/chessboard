@@ -124,21 +124,28 @@ public class Pawn extends Piece {
 
                 //left
                 if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
-                    boolean canBePinned = false;
-                    boolean add = true;
-                    for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                        if(chessboardGenerator.getPiece(row, column) instanceof King){
-                            canBePinned = true;
+//                    boolean canBePinned = false;
+                    boolean add = false;
+                    Piece king = null;
+                    Piece enemy = null;
+                    for(int column = this.column - 2; column >= 0; column--){
+                        Piece currentPiece = chessboardGenerator.getPiece(row, column);
+                        if(currentPiece != null){
+                            if(currentPiece instanceof King && currentPiece.getColor() == color)
+                                king = currentPiece;
+                            else if(currentPiece instanceof Queen || currentPiece instanceof Rook)
+                                enemy = currentPiece;
+                            else
+                                add = true;
                             break;
                         }
                     }
-                    if(canBePinned){
-                        for(int column = this.column - 1; column >= 0; column--){
-                            Piece piece = chessboardGenerator.getPiece(row, column);
-                            if(piece instanceof Rook || piece instanceof Queen){
+                    for(int column = this.column + 1; column <= Main.columns - 1; column++){
+                        Piece currentPiece = chessboardGenerator.getPiece(row, column);
+                        if(currentPiece != null){
+                            if(king != null && (currentPiece instanceof Queen || currentPiece instanceof Rook))
                                 add = false;
-                                break;
-                            }
+                            else add = enemy == null || !(currentPiece instanceof King);
                         }
                     }
                     if(add)
@@ -147,21 +154,28 @@ public class Pawn extends Piece {
 
                 //right
                 else if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
-                    boolean canBePinned = false;
+//                    boolean canBePinned = false;
                     boolean add = true;
-                    for(int column = this.column - 1; column >= 0; column--){
-                        if(chessboardGenerator.getPiece(row, column) instanceof King){
-                            canBePinned = true;
+                    Piece king = null;
+                    Piece enemy = null;
+                    for(int column = this.column - 2; column >= 0; column--){
+                        Piece currentPiece = chessboardGenerator.getPiece(row, column);
+                        if(currentPiece != null){
+                            if(currentPiece instanceof King && currentPiece.getColor() == color)
+                                king = currentPiece;
+                            else if(currentPiece instanceof Queen || currentPiece instanceof Rook)
+                                enemy = currentPiece;
+                            else
+                                add = true;
                             break;
                         }
                     }
-                    if(canBePinned){
-                        for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                            Piece piece = chessboardGenerator.getPiece(row, column);
-                            if(piece instanceof Rook || piece instanceof Queen){
+                    for(int column = this.column + 1; column <= Main.columns - 1; column++){
+                        Piece currentPiece = chessboardGenerator.getPiece(row, column);
+                        if(currentPiece != null){
+                            if(king != null && (currentPiece instanceof Queen || currentPiece instanceof Rook))
                                 add = false;
-                                break;
-                            }
+                            else add = enemy == null || !(currentPiece instanceof King);
                         }
                     }
                     if(add)
