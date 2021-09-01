@@ -57,7 +57,7 @@ public class EventHandler {
                 final int column = j;
                 rectangles[i][j].setOnMousePressed(event -> {
                     clickedField = rectangles[row][column];
-
+                    if(!chessboardGenerator.isRunning()) return;
 
                     if(!focusedOnPiece) {
                         Piece piece;
