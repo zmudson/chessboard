@@ -1,5 +1,6 @@
 package utils;
 
+import chessboard.ChessboardGenerator;
 import chessboard.Main;
 import chessboard.pieces.Piece;
 
@@ -8,26 +9,36 @@ import java.util.List;
 
 public class MoveGenerator {
 
-    private ArrayList<Piece> whitePieces;
-    private ArrayList<Piece> blackPieces;
+    private final List<Piece> whitePieces;
+    private final List<Piece> blackPieces;
 
-    private ArrayList<Move>[][] movesBoard;
+    private ArrayList[][] cachedMovesBoard;
 
-    public MoveGenerator(ArrayList<Piece> whitePieces, ArrayList<Piece> blackPieces) {
-        this.whitePieces = whitePieces;
-        this.blackPieces = blackPieces;
-        movesBoard = new ArrayList[Main.rows][Main.columns];
+    private int cachedMovesNumber;
+
+    private final ChessboardGenerator chessboardGenerator;
+
+    public MoveGenerator(ChessboardGenerator chessboardGenerator) {
+        this.whitePieces = chessboardGenerator.getWhitePieces();
+        this.blackPieces = chessboardGenerator.getBlackPieces();
+        this.chessboardGenerator = chessboardGenerator;
+        cachedMovesBoard = null;
+        cachedMovesNumber = 0;
     }
 
-    public ArrayList<Move>[][] generateMoves(Piece.Colors color){
+    public ArrayList[][] generateMoves(Piece.Colors color){
 
-        ArrayList<Piece> pieces = color == Piece.Colors.WHITE ? whitePieces : blackPieces;
-
-        clearBoard();
+        List<Piece> pieces = color == Piece.Colors.WHITE ? whitePieces : blackPieces;
+        ArrayList[][] movesBoard = new ArrayList[Main.rows][Main.columns];
+        boolean isCurrentColorTurn = color == chessboardGenerator.getColorToMove();
+        if(isCurrentColorTurn)
+            cachedMovesNumber = 0;
 
         for (Piece piece : pieces){
             List<Move> possibleMoves = piece.getPossibleMoves();
             for(Move move : possibleMoves){
+                if(isCurrentColorTurn)
+                    cachedMovesNumber++;
                 Position position = move.getEndPosition();
                 ArrayList<Move> movesList = movesBoard[position.getRow()][position.getColumn()];
                 if(movesList == null){
@@ -37,19 +48,14 @@ public class MoveGenerator {
                 movesList.add(move);
             }
         }
+        if(isCurrentColorTurn)
+            cachedMovesBoard = movesBoard;
 
         return movesBoard;
     }
 
-    public boolean hasFieldMoves(int row, int column){
-        return movesBoard[row][column] != null && movesBoard[row][column].size() > 0;
+    public int getCachedMovesNumber() {
+        return cachedMovesNumber;
     }
 
-    private void clearBoard(){
-        for(int row = 0; row < Main.rows; row++){
-            for(int column = 0; column < Main.columns; column++){
-                movesBoard[row][column] = null;
-            }
-        }
-    }
 }
