@@ -13,6 +13,12 @@ public class King extends Piece {
     public static final double power = 1000;
     public static final String name = "king";
     private static final String filename = "";
+    private boolean hasMoved = false;
+    private Position castlingRightPosition;
+    private Position castlingLeftPosition;
+    private Piece rookRight;
+    private Piece rookLeft;
+    private boolean canCastleNow;
 
     public King(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
         super(row, column, name, filename, power, color, chessboardGenerator);
@@ -21,6 +27,9 @@ public class King extends Piece {
     public List<Move> getPossibleMoves(){
         /* TODO */
         // castling
+        canCastleNow = false;
+        castlingLeftPosition = null;
+        castlingRightPosition = null;
         // check potential check
 
         List<Move> possibleMoves = new ArrayList<>();
@@ -45,21 +54,57 @@ public class King extends Piece {
         else if(row == Main.rows - 1)
             bottomBorder--;
 
+        //castling
+        if(!hasMoved&&!chessboardGenerator.isCheck()) {
+            rookRight = chessboardGenerator.getPiece(row, Main.columns - 1);
+            rookLeft = chessboardGenerator.getPiece(row, 0);
+            //short
+            //not null condition because intelliJ said so
+            if (rookRight instanceof Rook && ((Rook) rookRight).canCastle()) {
+                if (chessboardGenerator.getPiece(row, column + 1)==null && (chessboardGenerator.getPiece(row, column + 2) ==null)) {
+                    castlingRightPosition = new Position(row, column+2);
+                    possibleMoves.add(new Move(this, this.getPosition(),castlingRightPosition));
+                    canCastleNow = true;
+                }
+            }
+            //long
+            if(rookLeft instanceof Rook && ((Rook)rookLeft).canCastle()) {
+                if(chessboardGenerator.getPiece(row, column-1)==null &&chessboardGenerator.getPiece(row, column-2)==null && chessboardGenerator.getPiece(row, column-3)==null) {
+                    castlingLeftPosition = new Position(row, column-2);
+                    possibleMoves.add(new Move(this, this.getPosition(),castlingLeftPosition));
+                    canCastleNow = true;
+                    //check validity
+                }
+            }
+        }
+
         // iterate through available positions and the legals positions to list
         Colors enemyColor = color == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
         if(color == chessboardGenerator.getColorToMove())
             chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
+
+        //castling pt2
 
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
                 Piece piece = chessboardGenerator.getPiece(row, column);
                 if(MoveHandler.isValid(this, piece) && (color != chessboardGenerator.getColorToMove() ||
                         !chessboardGenerator.getMoveGenerator().hasFieldMoves(row, column))){
-                    System.out.println();
                     possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
                 }
             }
         }
         return possibleMoves;
+    }
+
+    @Override
+    public void move(int row, int column) {
+        if(canCastleNow) {
+            if(castlingRightPosition!= null && castlingRightPosition.getColumn()==column && castlingRightPosition.getRow()==row) ((Rook)rookRight).castle();
+            else if(castlingLeftPosition.getColumn() == column && castlingLeftPosition.getRow() == row) ((Rook)rookLeft).castle();
+        }
+        super.move(row, column);
+
+        hasMoved = true;
     }
 }
