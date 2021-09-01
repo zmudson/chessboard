@@ -80,16 +80,18 @@ public class King extends Piece {
 
         // iterate through available positions and the legals positions to list
         Colors enemyColor = color == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
+        ArrayList[][] movesBoard = null;
         if(color == chessboardGenerator.getColorToMove())
-            chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
+            movesBoard = chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
 
         //castling pt2
 
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
                 Piece piece = chessboardGenerator.getPiece(row, column);
-                if(MoveHandler.isValid(this, piece) && (color != chessboardGenerator.getColorToMove() ||
-                        !chessboardGenerator.getMoveGenerator().hasFieldMoves(row, column))){
+                if(MoveHandler.isValid(this, piece) && (movesBoard == null ||
+                        (movesBoard[row][column] == null))){
+
                     possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
                 }
             }

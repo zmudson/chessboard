@@ -42,6 +42,7 @@ public class ChessboardGenerator {
     private List<Position> fieldsToBlockCheck = new ArrayList<>();
 
     private boolean isCheck;
+    private boolean isRunning = true;
 
     //for en passant
     private static Pawn pawnForEnPassant = null;
@@ -61,7 +62,7 @@ public class ChessboardGenerator {
     }
 
     public void play(int row, int column, Piece piece){
-        if(colorToMove == piece.getColor()){
+        if(isRunning && colorToMove == piece.getColor()){
             piece.move(row, column);
             colorToMove = colorToMove == Piece.Colors.WHITE ? Piece.Colors.BLACK : Piece.Colors.WHITE;
             unpinAndResetAllDirections();
@@ -182,7 +183,7 @@ public class ChessboardGenerator {
                 whitePieces.add(piece);
         }
 
-        moveGenerator = new MoveGenerator(whitePieces, blackPieces);
+        moveGenerator = new MoveGenerator(this);
     }
 
     public Node[][] getRectangles() {
@@ -242,15 +243,17 @@ public class ChessboardGenerator {
         this.blackPieces = blackPieces;
     }
 
+    public boolean isRunning() {
+        return isRunning;
+    }
+
     public void checkAllPinsAndChecks() {
         //which king is going to be checked
-        King king = null;
+        King king = colorToMove == Piece.Colors.WHITE ? whiteKing : blackKing;
         ArrayList<Knight> knights = new ArrayList<>();
         isCheck = false;
 
         fieldsToBlockCheck.clear();
-
-        king = colorToMove == Piece.Colors.WHITE ? whiteKing : blackKing;
 
         //list with all checks
         List<Piece> checks = new ArrayList<>();
@@ -369,10 +372,29 @@ public class ChessboardGenerator {
             }
 
         }
+
+        // set check before moves generating
+        if(checks.size() > 0)
+            isCheck = true;
+
+        // generate moves and count them
+        moveGenerator.generateMoves(colorToMove);
+        int movesNumber = moveGenerator.getCachedMovesNumber();
+
+        String color = colorToMove == Piece.Colors.WHITE ? "white" : "black";
+        System.out.println(color + ":" + movesNumber);
+
+        if(movesNumber == 0){
+            isRunning = false;
+            if (isCheck)
+                System.out.println("checkmate");
+            else
+                System.out.println("stalemate");
+        }
+
         //DEBUG
         if(checks.size()>0){
             System.out.println("Checks:");
-            isCheck = true;
         }
         for(Piece check: checks) {
             System.out.println(check.getName());
