@@ -1,6 +1,6 @@
 package utils;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import chessboard.Main;
 import chessboard.pieces.Piece;
 import javafx.scene.Node;
@@ -40,12 +40,12 @@ public class EventHandler {
     private Rectangle lastMovedToField = null;
 
 
-    private final ChessboardGenerator chessboardGenerator;
+    private final Chessboard chessboard;
 
-    public EventHandler(int columns, int rows, ChessboardGenerator chessboardGenerator) {
+    public EventHandler(int columns, int rows, Chessboard chessboard) {
         this.columns = columns;
         this.rows = rows;
-        this.chessboardGenerator = chessboardGenerator;
+        this.chessboard = chessboard;
     }
 
     // setup fields events
@@ -57,14 +57,14 @@ public class EventHandler {
                 final int column = j;
                 rectangles[i][j].setOnMousePressed(event -> {
                     clickedField = rectangles[row][column];
-                    if(!chessboardGenerator.isRunning()) return;
+                    if(!chessboard.isRunning()) return;
 
                     if(!focusedOnPiece) {
                         Piece piece;
-                        piece = chessboardGenerator.getPiece(row, column);
+                        piece = chessboard.getPiece(row, column);
 
                         // can't move if it is not this piece turn
-                        if(piece != null && piece.getColor() != chessboardGenerator.getColorToMove())
+                        if(piece != null && piece.getColor() != chessboard.getColorToMove())
                             return;
 
                         //check if it is possile to color rectangle
@@ -76,10 +76,10 @@ public class EventHandler {
                             currentPiece = piece;
 
                             //uncolor last piece
-                            if (lastClicked != null) chessboardGenerator.colorField(lastClicked, lastColor);
+                            if (lastClicked != null) chessboard.colorField(lastClicked, lastColor);
                             lastClicked = (Rectangle) clickedField;
                             lastColor = (Color) lastClicked.getFill();
-                            chessboardGenerator.colorField(row, column, CLICKED_COLOR);
+                            chessboard.colorField(row, column, CLICKED_COLOR);
 
                             //get and show available moves
                             List<Move> moves = piece.getPossibleMoves();
@@ -107,11 +107,11 @@ public class EventHandler {
                             }
                         }
                         // uncolor
-                        chessboardGenerator.colorField(lastClicked, lastColor);
+                        chessboard.colorField(lastClicked, lastColor);
                         for(Move move : focusedPieceMoves) {
                             Position position = move.getEndPosition();
                             Color color = getFieldColor(position.getRow(),position.getColumn());
-                            chessboardGenerator.colorField(position.getRow(), position.getColumn(), color);
+                            chessboard.colorField(position.getRow(), position.getColumn(), color);
                         }
                         //make sure that last colors are showed
                         if(lastMovedToField!=null) {
@@ -123,7 +123,7 @@ public class EventHandler {
                         if(legalMove) {
 
                             // make turn
-                            chessboardGenerator.play(row, column, currentPiece);
+                            chessboard.play(row, column, currentPiece);
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {
@@ -131,8 +131,8 @@ public class EventHandler {
                                 lastMovedToField.setFill(getFieldColor((int)(lastMovedToField.getX()*8/Main.width), (int)(lastMovedToField.getY()*8/Main.width)));
                             }
                             //color this move
-                            chessboardGenerator.colorField(lastClicked, MOVED_FROM_COLOR);
-                            chessboardGenerator.colorField(row, column, MOVED_TO_COLOR);
+                            chessboard.colorField(lastClicked, MOVED_FROM_COLOR);
+                            chessboard.colorField(row, column, MOVED_TO_COLOR);
                             //remember which fields has been colored
                             lastMovedFromField = lastClicked;
                             lastMovedToField = (Rectangle) rectangles[row][column];
@@ -150,7 +150,7 @@ public class EventHandler {
     }
 
     private Color getFieldColor(int row, int column) {
-        return  (row + column) % 2 == 0 ? ChessboardGenerator.CHESSBOARD_WHITE_COLOR : ChessboardGenerator.CHESSBOARD_BLACK_COLOR;
+        return  (row + column) % 2 == 0 ? Chessboard.CHESSBOARD_WHITE_COLOR : Chessboard.CHESSBOARD_BLACK_COLOR;
     }
 
 

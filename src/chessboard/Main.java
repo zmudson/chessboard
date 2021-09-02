@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import utils.EventHandler;
-import utils.MoveGenerator;
 
 public class Main extends Application {
 
@@ -23,7 +22,7 @@ public class Main extends Application {
     private Scene scene;
 
     private EventHandler eventHandler;
-    private ChessboardGenerator chessboardGenerator;
+    private Chessboard chessboard;
 
     public static void main(String[] args) {
         launch(args);
@@ -38,7 +37,7 @@ public class Main extends Application {
         stage.getIcons().add(new Image(iconFilename));
         this.root = new Group();
 
-        chessboardGenerator = new ChessboardGenerator(width,height,rows,columns,root);
+        chessboard = new Chessboard(width,height,rows,columns,root);
 
         initialize();
         stage.show();
@@ -50,13 +49,13 @@ public class Main extends Application {
     public void initialize(){
         this.scene = new Scene(root, width, height);
         stage.setScene(scene);
-        chessboardGenerator.initChessboard();
-        chessboardGenerator.generateChessboard();
-        chessboardGenerator.fillChessboard();
+        chessboard.initChessboard();
+        chessboard.generateChessboard();
+        chessboard.fillChessboard();
     }
 
     private void initHandlerEvents() {
-        eventHandler = new EventHandler(columns, rows, chessboardGenerator);
-        eventHandler.setUpRectangleEvents(chessboardGenerator.getRectangles());
+        eventHandler = new EventHandler(columns, rows, chessboard);
+        eventHandler.setUpRectangleEvents(chessboard.getRectangles());
     }
 }

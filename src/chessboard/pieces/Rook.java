@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import utils.Move;
 
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ public class Rook extends Piece {
     public static int LONG_CASTLING_ROOK_COLUMN = 3;
     public static int SHORT_CASTLING_ROOK_COLUMN = 5;
 
-    public Rook(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
-        super(row, column, name, filename, power, color, chessboardGenerator);
+    public Rook(int row, int column, Piece.Colors color, Chessboard chessboard) {
+        super(row, column, name, filename, power, color, chessboard);
     }
 
     public List<Move> getPossibleMoves(){

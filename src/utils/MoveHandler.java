@@ -7,7 +7,7 @@ public class MoveHandler {
     public static boolean isValid(Piece movingPiece, Piece attackedPiece) {
         if(attackedPiece == null){
             return true;
-        }else if(movingPiece.getColor() != movingPiece.getChessboardGenerator().getColorToMove()){
+        }else if(movingPiece.getColor() != movingPiece.getChessboard().getColorToMove()){
             if(attackedPiece instanceof King){
                 return movingPiece.getColor() != attackedPiece.getColor();
             }else

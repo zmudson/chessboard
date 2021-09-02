@@ -22,19 +22,8 @@ public class Move {
         this.piece = piece;
     }
 
-    public Position getStartPosition() {
-        return startPosition;
-    }
-
-    public void setStartPosition(Position startPosition) {
-        this.startPosition = startPosition;
-    }
-
     public Position getEndPosition() {
         return endPosition;
     }
 
-    public void setEndPosition(Position endPosition) {
-        this.endPosition = endPosition;
-    }
 }

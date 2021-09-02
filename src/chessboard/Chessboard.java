@@ -14,7 +14,7 @@ import utils.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChessboardGenerator {
+public class Chessboard {
 
     // fields colors
     public static Color CHESSBOARD_WHITE_COLOR = Color.web("#F0D9B5");
@@ -50,7 +50,7 @@ public class ChessboardGenerator {
     private King whiteKing = null;
     private King blackKing = null;
 
-    public ChessboardGenerator(double width, double height, int rows, int columns, Parent root) {
+    public Chessboard(double width, double height, int rows, int columns, Parent root) {
         this.width = width;
         this.height = height;
         this.rows = rows;
@@ -230,7 +230,6 @@ public class ChessboardGenerator {
     }
 
     // return piece on provided position if it is on it, otherwise return null
-    /* consider add this method to utils */
     public Piece getPiece(int row, int column) {
         for (Piece piece : pieces) {
             if (piece.getRow() == row && piece.getColumn() == column) {
@@ -238,10 +237,6 @@ public class ChessboardGenerator {
             }
         }
         return null;
-    }
-
-    public boolean isFieldEmpty(int row, int column, ArrayList<Piece> pieces){
-        return getPiece(row, column) == null;
     }
 
     public static void setPawnAbleToBeCapturedByEnPassant(Pawn pawn) {
@@ -256,16 +251,8 @@ public class ChessboardGenerator {
         return whitePieces;
     }
 
-    public void setWhitePieces(ArrayList<Piece> whitePieces) {
-        this.whitePieces = whitePieces;
-    }
-
     public ArrayList<Piece> getBlackPieces() {
         return blackPieces;
-    }
-
-    public void setBlackPieces(ArrayList<Piece> blackPieces) {
-        this.blackPieces = blackPieces;
     }
 
     public boolean isRunning() {
@@ -313,7 +300,7 @@ public class ChessboardGenerator {
                     //check if enemy pieces could attack the king
                     if ( (diagonal && piece instanceof Bishop) ||
                             (!diagonal && piece instanceof Rook) ||
-                            (piece instanceof Queen) || //TODO dodać warunek króla
+                            (piece instanceof Queen) ||
                             (diagonal && piece instanceof Pawn && (y==kingColumn+1 || y==kingColumn-1) &&dx==-((Pawn)piece).getDirection() )) {
                         //if there was our color piece before, it must be a pin
                         if(possiblePin!=null) {
@@ -452,16 +439,8 @@ public class ChessboardGenerator {
         return moveGenerator;
     }
 
-    public void setMoveGenerator(MoveGenerator moveGenerator) {
-        this.moveGenerator = moveGenerator;
-    }
-
     public List<Position> getFieldsToBlockCheck() {
         return fieldsToBlockCheck;
-    }
-
-    public void setFieldsToBlockCheck(List<Position> fieldsToBlockCheck) {
-        this.fieldsToBlockCheck = fieldsToBlockCheck;
     }
 
     public boolean isCheck() {

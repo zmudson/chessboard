@@ -1,6 +1,6 @@
 package utils;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import chessboard.Main;
 import chessboard.pieces.Piece;
 
@@ -16,9 +16,9 @@ public class MoveGenerator {
 
     private int cachedMovesNumber;
 
-    private final ChessboardGenerator chessboardGenerator;
+    private final Chessboard chessboardGenerator;
 
-    public MoveGenerator(ChessboardGenerator chessboardGenerator) {
+    public MoveGenerator(Chessboard chessboardGenerator) {
         this.whitePieces = chessboardGenerator.getWhitePieces();
         this.blackPieces = chessboardGenerator.getBlackPieces();
         this.chessboardGenerator = chessboardGenerator;

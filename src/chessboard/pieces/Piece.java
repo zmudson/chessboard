@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import chessboard.Main;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
@@ -37,23 +37,23 @@ public abstract class Piece {
     protected boolean canMove = true;
     protected List<BlockedDirections> blockedDirections = new ArrayList<>();
 
-    protected ChessboardGenerator chessboardGenerator;
+    protected Chessboard chessboard;
 
-    public Piece(int row, int column, String name, String filename, double power, Colors color, ChessboardGenerator chessboardGenerator) {
+    public Piece(int row, int column, String name, String filename, double power, Colors color, Chessboard chessboard) {
         this.row = row;
         this.column = column;
         this.name = name;
         this.filename = filename;
         this.power = power;
         this.color = color;
-        this.chessboardGenerator = chessboardGenerator;
+        this.chessboard = chessboard;
     }
 
     protected void removeIllegalMoves(List<Move> possibleMoves){
-        if(chessboardGenerator.isCheck() && color == chessboardGenerator.getColorToMove()){
+        if(chessboard.isCheck() && color == chessboard.getColorToMove()){
             possibleMoves.removeIf(move -> {
                 boolean remove = true;
-                for(Position position : chessboardGenerator.getFieldsToBlockCheck()){
+                for(Position position : chessboard.getFieldsToBlockCheck()){
                     if(move.getEndPosition().equals(position)){
                         remove = false;
                         break;
@@ -70,15 +70,15 @@ public abstract class Piece {
     // capture handling
     protected void capture(Piece piece){
         if(piece != null){
-            ((Group)chessboardGenerator.getRoot()).getChildren().remove(piece.getImage());
-            chessboardGenerator.getPieces().remove(piece);
+            ((Group) chessboard.getRoot()).getChildren().remove(piece.getImage());
+            chessboard.getPieces().remove(piece);
             if(piece.getColor() == Colors.WHITE)
-                chessboardGenerator.getWhitePieces().remove(piece);
+                chessboard.getWhitePieces().remove(piece);
             else if(piece.getColor() == Colors.BLACK)
-                chessboardGenerator.getBlackPieces().remove(piece);
+                chessboard.getBlackPieces().remove(piece);
 
             // draw handling
-            chessboardGenerator.checkDraw();
+            chessboard.checkDraw();
         }
     }
 
@@ -92,10 +92,10 @@ public abstract class Piece {
     }
 
     protected void unsetEnPassant(){
-        Pawn pawn = ChessboardGenerator.getPawnAbleToBeCapturedByEnPassant();
+        Pawn pawn = Chessboard.getPawnAbleToBeCapturedByEnPassant();
         if(pawn != null){
             pawn.setIsPossibleToBeCapturedByEnPassant(false);
-            ChessboardGenerator.setPawnAbleToBeCapturedByEnPassant(null);
+            Chessboard.setPawnAbleToBeCapturedByEnPassant(null);
         }
     }
 
@@ -106,7 +106,7 @@ public abstract class Piece {
         unsetEnPassant();
 
         // capture handling
-        Piece piece = chessboardGenerator.getPiece(row, column);
+        Piece piece = chessboard.getPiece(row, column);
         if(piece != null)
             capture(piece);
 
@@ -119,7 +119,7 @@ public abstract class Piece {
         boolean isNext = false;
         if(MoveHandler.isValid(this, piece)){
             possibleMoves.add(new Move(this, getPosition(), new Position(row, column)));
-            if(piece == null || (color != chessboardGenerator.getColorToMove() && piece instanceof King && color != piece.getColor()))
+            if(piece == null || (color != chessboard.getColorToMove() && piece instanceof King && color != piece.getColor()))
                 isNext = true;
         }
         return isNext;
@@ -133,14 +133,14 @@ public abstract class Piece {
         if(! blockedDirections.contains(BlockedDirections.HORIZONTAL)) {
             // get possible moves from current position to left border
             for(int column = this.column - 1; column >= 0; column--){
-                Piece piece = chessboardGenerator.getPiece(this.row, column);
+                Piece piece = chessboard.getPiece(this.row, column);
                 if(!getPossibleMove(this.row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to right border
             for(int column = this.column + 1; column <= Main.columns - 1; column++){
-                Piece piece = chessboardGenerator.getPiece(this.row, column);
+                Piece piece = chessboard.getPiece(this.row, column);
                 if(!getPossibleMove(this.row, column, possibleMoves, piece))
                     break;
             }
@@ -149,14 +149,14 @@ public abstract class Piece {
         if(! blockedDirections.contains(BlockedDirections.VERTICAL)) {
             // get possible moves from current position to top border
             for(int row = this.row - 1; row >= 0; row--){
-                Piece piece = chessboardGenerator.getPiece(row, this.column);
+                Piece piece = chessboard.getPiece(row, this.column);
                 if(!getPossibleMove(row, this.column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to bottom border
             for(int row = this.row + 1; row <= Main.rows - 1; row++){
-                Piece piece = chessboardGenerator.getPiece(row, this.column);
+                Piece piece = chessboard.getPiece(row, this.column);
                 if(!getPossibleMove(row, this.column, possibleMoves, piece))
                     break;
             }
@@ -168,21 +168,19 @@ public abstract class Piece {
     protected List<Move> getDiagonalMoves(){
         List<Move> possibleMoves = new ArrayList<>();
 
-
-
         //if udd are possible
         if(! blockedDirections.contains(BlockedDirections.DOWN_UP_DIAGONAL)) {
 
             // get possible moves from current position to the top of first diagonal \
             for (int column = this.column - 1, row = this.row - 1; column >= 0 && row >= 0; column--, row--) {
-                Piece piece = chessboardGenerator.getPiece(row, column);
+                Piece piece = chessboard.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to the bottom of first diagonal \
             for (int column = this.column + 1, row = this.row + 1; column <= Main.columns - 1 && row <= Main.columns - 1; column++, row++) {
-                Piece piece = chessboardGenerator.getPiece(row, column);
+                Piece piece = chessboard.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
@@ -192,14 +190,14 @@ public abstract class Piece {
 
             // get possible moves from current position to the top of second diagonal /
             for (int column = this.column + 1, row = this.row - 1; column <= Main.columns - 1 && row >= 0; column++, row--) {
-                Piece piece = chessboardGenerator.getPiece(row, column);
+                Piece piece = chessboard.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
 
             // get possible moves from current position to the bottom of second diagonal /
             for (int column = this.column - 1, row = this.row + 1; column >= 0 && row <= Main.rows - 1; column--, row++) {
-                Piece piece = chessboardGenerator.getPiece(row, column);
+                Piece piece = chessboard.getPiece(row, column);
                 if (!getPossibleMove(row, column, possibleMoves, piece))
                     break;
             }
@@ -241,28 +239,12 @@ public abstract class Piece {
         this.image = image;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
     public int getColumn() {
         return column;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFilename() {
-        return filename;
     }
 
     public Colors getColor() {
@@ -273,35 +255,16 @@ public abstract class Piece {
         this.color = color;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public double getPower() {
-        return power;
-    }
-
-    public void setPower(double power) {
-        this.power = power;
-    }
-
-    public boolean isPinned() {
-        return isPinned;
-    }
-
     public void setPinned(boolean pinned) {
         isPinned = pinned;
-    }
-    public boolean canMove() {
-        return canMove;
     }
 
     public void setCanMove(boolean canMove) {
         this.canMove = canMove;
     }
 
-    public ChessboardGenerator getChessboardGenerator(){
-        return chessboardGenerator;
+    public Chessboard getChessboard(){
+        return chessboard;
     }
 
 }

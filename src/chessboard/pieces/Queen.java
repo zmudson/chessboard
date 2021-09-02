@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import utils.Move;
 
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ public class Queen extends Piece {
     public static final String name = "queen";
     private static final String filename = "";
 
-    public Queen(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
-        super(row, column, name, filename, power, color, chessboardGenerator);
+    public Queen(int row, int column, Piece.Colors color, Chessboard chessboard) {
+        super(row, column, name, filename, power, color, chessboard);
     }
 
     public List<Move> getPossibleMoves(){
