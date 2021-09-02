@@ -4,9 +4,13 @@ import chessboard.Chessboard;
 import chessboard.Main;
 import chessboard.pieces.Piece;
 import javafx.scene.Node;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +42,6 @@ public class EventHandler {
     private List<Move> focusedPieceMoves = new ArrayList<>();
     private Rectangle lastMovedFromField = null;
     private Rectangle lastMovedToField = null;
-
 
     private final Chessboard chessboard;
 
@@ -124,6 +127,7 @@ public class EventHandler {
 
                             // make turn
                             chessboard.play(row, column, currentPiece);
+                            sound();
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {
@@ -151,6 +155,13 @@ public class EventHandler {
 
     private Color getFieldColor(int row, int column) {
         return  (row + column) % 2 == 0 ? Chessboard.CHESSBOARD_WHITE_COLOR : Chessboard.CHESSBOARD_BLACK_COLOR;
+    }
+
+    private void sound(){
+        File file = new File(Main.moveSoundEffectFilename);
+        Media media = new Media(file.toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
     }
 
 

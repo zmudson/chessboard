@@ -14,6 +14,7 @@ public class Main extends Application {
     public static final double height = 600;
     public static final String title = "chess.iek";
     public static final String iconFilename = "assets/images/piece.png";
+    public static final String moveSoundEffectFilename = "src/assets/sounds/sound.wav";
     public static final int rows = 8;
     public static final int columns = 8;
 
