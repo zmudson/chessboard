@@ -16,7 +16,7 @@ public class Bishop extends Piece {
     }
 
     public List<Move> getPossibleMoves(){
-        if(!canMove()) return new ArrayList<>();
+        if(!canMove) return new ArrayList<>();
         List<Move> possibleMoves = getDiagonalMoves();
         removeIllegalMoves(possibleMoves);
         return possibleMoves;

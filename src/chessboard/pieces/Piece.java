@@ -33,8 +33,8 @@ public abstract class Piece {
     protected Colors color;
     private ImageView image;
 
-    private boolean isPinned;
-    private boolean canMove = true;
+    protected boolean isPinned;
+    protected boolean canMove = true;
     protected List<BlockedDirections> blockedDirections = new ArrayList<>();
 
     protected ChessboardGenerator chessboardGenerator;
@@ -76,6 +76,9 @@ public abstract class Piece {
                 chessboardGenerator.getWhitePieces().remove(piece);
             else if(piece.getColor() == Colors.BLACK)
                 chessboardGenerator.getBlackPieces().remove(piece);
+
+            // draw handling
+            chessboardGenerator.checkDraw();
         }
     }
 
@@ -211,6 +214,10 @@ public abstract class Piece {
         blockedDirections.add(BlockedDirections.VERTICAL);
         blockedDirections.add(BlockedDirections.HORIZONTAL);
         blockedDirections.remove(direction);
+    }
+
+    public static boolean isSignificantFigure(Piece piece){
+        return piece instanceof Pawn || piece instanceof Rook || piece instanceof Queen;
     }
 
     public void unblockDirections() {

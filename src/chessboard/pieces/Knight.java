@@ -23,7 +23,7 @@ public class Knight extends Piece {
         
         List<Move> possibleMoves = new ArrayList<>();
 
-        if(isPinned()||!canMove()) return possibleMoves;
+        if(isPinned||!canMove) return possibleMoves;
 
         for(int i = 0, rowMove = -2, columnMove; i < maxPossibleMovesNumber; i++){
 
