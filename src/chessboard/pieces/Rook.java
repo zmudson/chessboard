@@ -21,9 +21,7 @@ public class Rook extends Piece {
     }
 
     public List<Move> getPossibleMoves(){
-        /* TODO */
-        // castling
-        if(!canMove()) return new ArrayList<>();
+        if(!canMove) return new ArrayList<>();
         List<Move> possibleMoves = getStraightMoves();
         removeIllegalMoves(possibleMoves);
         return possibleMoves;

@@ -70,6 +70,31 @@ public class ChessboardGenerator {
         }
     }
 
+    // handling draw check
+    public void checkDraw(){
+        if(whitePieces.size() < 3 && blackPieces.size() < 3){
+            int length = Math.max(whitePieces.size(), blackPieces.size());
+            boolean isDraw = true;
+            for(int i = 0; i < length; i++){
+                if (whitePieces.size() > i) {
+                    if (Piece.isSignificantFigure(whitePieces.get(i))) {
+                        isDraw = false;
+                        break;
+                    }
+                }else{
+                    if (Piece.isSignificantFigure(blackPieces.get(i))) {
+                        isDraw = false;
+                        break;
+                    }
+                }
+            }
+            if(isDraw){
+                isRunning = false;
+                System.out.println("draw");
+            }
+        }
+    }
+
     // create chessboard fields and color them
     public void generateChessboard(){
         double rectangleWidth = width / columns;

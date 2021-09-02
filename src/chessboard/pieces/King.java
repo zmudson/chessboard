@@ -25,17 +25,15 @@ public class King extends Piece {
     }
 
     public List<Move> getPossibleMoves(){
-        /* TODO */
+
+        List<Move> possibleMoves = new ArrayList<>();
+
+        if(!canMove) return possibleMoves;
+
         // castling
         canCastleNow = false;
         castlingLeftPosition = null;
         castlingRightPosition = null;
-        // check potential check
-
-        List<Move> possibleMoves = new ArrayList<>();
-
-        /* consider remove this line */
-        if(!canMove()) return possibleMoves;
 
         int leftBorder = column - 1;
         int rightBorder = column + 1;
@@ -66,7 +64,6 @@ public class King extends Piece {
                 rookRight = chessboardGenerator.getPiece(row, Main.columns - 1);
                 rookLeft = chessboardGenerator.getPiece(row, 0);
                 //short
-                //not null condition because intelliJ said so
                 if (rookRight instanceof Rook && ((Rook) rookRight).canCastle()) {
                     boolean isCastlingPossible = true;
                     for (int i = 1; i <= 2; i++) {

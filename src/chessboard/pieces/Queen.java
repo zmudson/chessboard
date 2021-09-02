@@ -17,7 +17,7 @@ public class Queen extends Piece {
 
     public List<Move> getPossibleMoves(){
 
-        if(!canMove()) return new ArrayList<>();
+        if(!canMove) return new ArrayList<>();
         // get all straight moves
         List<Move> possibleMoves = getStraightMoves();
         // append to array all diagonal moves
