@@ -6,7 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import utils.EventHandler;
 import utils.ImageGenerator;
 import utils.MoveGenerator;
 import utils.Position;
@@ -31,6 +33,7 @@ public class Chessboard {
 
     private Parent root;
     private Node[][] rectangles;
+    private Node[][] circles;
     private ArrayList<Piece> pieces;
     private ArrayList<Piece> whitePieces;
     private ArrayList<Piece> blackPieces;
@@ -59,6 +62,7 @@ public class Chessboard {
        // this.pieces = pieces;
 
         rectangles = new Node[rows][columns];
+        circles = new Node[rows][columns];
     }
 
     public void play(int row, int column, Piece piece){
@@ -101,15 +105,28 @@ public class Chessboard {
         double rectangleHeight = height / rows;
         for(int row = 0; row < rows; row++){
             for(int column = 0; column < columns; column++){
+                // init rectangle
                 Color color = (row + column) % 2 == 0 ? CHESSBOARD_WHITE_COLOR : CHESSBOARD_BLACK_COLOR;
-                double x = rectangleWidth * column;
-                double y = rectangleHeight * row;
+                double rectangleX = rectangleWidth * column;
+                double rectangleY = rectangleHeight * row;
                 Rectangle rectangle = new Rectangle(rectangleWidth, rectangleHeight, color);
-                rectangle.setX(x);
-                rectangle.setY(y);
+                rectangle.setX(rectangleX);
+                rectangle.setY(rectangleY);
+
+                // init circle
+                double circleX = rectangleX + rectangleWidth / 2;
+                double circleY = rectangleY + rectangleHeight / 2;
+                Circle circle = new Circle(circleX,circleY, Math.min(rectangleWidth, rectangleHeight) / 8, EventHandler.AVAILABLE_MOVE_COLOR);
+                circle.setOpacity(0.5);
+                circle.setVisible(false);
+                circle.setMouseTransparent(true);
+
+                // add nodes to group
                 ((Group) root).getChildren().add(rectangle);
+                ((Group) root).getChildren().add(circle);
                 //add rectangles to array
                 rectangles[row][column] = rectangle;
+                circles[row][column] = circle;
             }
         }
     }
@@ -449,6 +466,10 @@ public class Chessboard {
 
     public Piece.Colors getColorToMove() {
         return colorToMove;
+    }
+
+    public Node[][] getCircles(){
+        return circles;
     }
 
 }

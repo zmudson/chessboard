@@ -8,6 +8,7 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class EventHandler {
     }
 
     // setup fields events
-    public void setUpRectangleEvents(Node[][] rectangles) {
+    public void setUpFieldsEvents(Node[][] rectangles, Node[][] circles) {
 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {
@@ -89,8 +90,9 @@ public class EventHandler {
                             focusedPieceMoves = moves;
                             for(Move move : moves) {
                                 Position position = move.getEndPosition();
-                                Rectangle rect = (Rectangle) rectangles[position.getRow()][position.getColumn()];
-                                rect.setFill(AVAILABLE_MOVE_COLOR);
+//                                Rectangle rect = (Rectangle) rectangles[position.getRow()][position.getColumn()];
+//                                rect.setFill(AVAILABLE_MOVE_COLOR);
+                                circles[position.getRow()][position.getColumn()].setVisible(true);
                             }
 
 
@@ -113,8 +115,9 @@ public class EventHandler {
                         chessboard.colorField(lastClicked, lastColor);
                         for(Move move : focusedPieceMoves) {
                             Position position = move.getEndPosition();
-                            Color color = getFieldColor(position.getRow(),position.getColumn());
-                            chessboard.colorField(position.getRow(), position.getColumn(), color);
+//                            Color color = getFieldColor(position.getRow(),position.getColumn());
+//                            chessboard.colorField(position.getRow(), position.getColumn(), color);
+                            circles[position.getRow()][position.getColumn()].setVisible(false);
                         }
                         //make sure that last colors are showed
                         if(lastMovedToField!=null) {
@@ -164,5 +167,8 @@ public class EventHandler {
         mediaPlayer.play();
     }
 
+    private void showAvailableMoves(){
+
+    }
 
 }
