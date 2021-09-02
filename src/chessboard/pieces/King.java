@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import chessboard.Main;
 import utils.Move;
 import utils.MoveHandler;
@@ -20,8 +20,8 @@ public class King extends Piece {
     private Piece rookLeft;
     private boolean canCastleNow;
 
-    public King(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
-        super(row, column, name, filename, power, color, chessboardGenerator);
+    public King(int row, int column, Piece.Colors color, Chessboard chessboard) {
+        super(row, column, name, filename, power, color, chessboard);
     }
 
     public List<Move> getPossibleMoves(){
@@ -40,7 +40,7 @@ public class King extends Piece {
         int topBorder = row - 1;
         int bottomBorder = row + 1;
 
-        // check if king is on wing and handling overbound index problem
+        // check if king is at the edge and handling overbound index problem
         if(column == 0)
             leftBorder++;
         else if(column == Main.columns - 1)
@@ -56,18 +56,20 @@ public class King extends Piece {
         // iterate through available positions and the legals positions to list
         Colors enemyColor = color == Colors.WHITE ? Colors.BLACK : Colors.WHITE;
         ArrayList[][] movesBoard = null;
-        if(color == chessboardGenerator.getColorToMove()) {
-            movesBoard = chessboardGenerator.getMoveGenerator().generateMoves(enemyColor);
+        if(color == chessboard.getColorToMove()) {
+            movesBoard = chessboard.getMoveGenerator().generateMoves(enemyColor);
 
             //castling
-            if (!hasMoved && !chessboardGenerator.isCheck()) {
-                rookRight = chessboardGenerator.getPiece(row, Main.columns - 1);
-                rookLeft = chessboardGenerator.getPiece(row, 0);
+            if (!hasMoved && !chessboard.isCheck()) {
+
+                rookRight = chessboard.getPiece(row, Main.columns - 1);
+                rookLeft = chessboard.getPiece(row, 0);
+
                 //short
                 if (rookRight instanceof Rook && ((Rook) rookRight).canCastle()) {
                     boolean isCastlingPossible = true;
                     for (int i = 1; i <= 2; i++) {
-                        if (!(chessboardGenerator.getPiece(row, column + i) == null && movesBoard[row][column + i] == null)) {
+                        if (!(chessboard.getPiece(row, column + i) == null && movesBoard[row][column + i] == null)) {
                             isCastlingPossible = false;
                             break;
                         }
@@ -78,11 +80,12 @@ public class King extends Piece {
                         canCastleNow = true;
                     }
                 }
+
                 //long
                 if (rookLeft instanceof Rook && ((Rook) rookLeft).canCastle()) {
                     boolean isCastlingPossible = true;
                     for (int i = 1; i <= 3; i++) {
-                        if (!(chessboardGenerator.getPiece(row, column - i) == null && movesBoard[row][column - i] == null)) {
+                        if (!(chessboard.getPiece(row, column - i) == null && movesBoard[row][column - i] == null)) {
                             isCastlingPossible = false;
                             break;
                         }
@@ -98,7 +101,7 @@ public class King extends Piece {
 
         for(int row = topBorder; row <= bottomBorder; row++){
             for(int column = leftBorder; column <= rightBorder; column++){
-                Piece piece = chessboardGenerator.getPiece(row, column);
+                Piece piece = chessboard.getPiece(row, column);
                 if(MoveHandler.isValid(this, piece) && (movesBoard == null ||
                         (movesBoard[row][column] == null))){
 

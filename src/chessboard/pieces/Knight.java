@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import chessboard.Main;
 import utils.Move;
 import utils.MoveHandler;
@@ -15,8 +15,8 @@ public class Knight extends Piece {
     private static final String filename = "";
     public static final int maxPossibleMovesNumber = 8;
 
-    public Knight(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
-        super(row, column, name, filename, power, color, chessboardGenerator);
+    public Knight(int row, int column, Piece.Colors color, Chessboard chessboard) {
+        super(row, column, name, filename, power, color, chessboard);
     }
 
     public List<Move> getPossibleMoves(){
@@ -34,7 +34,7 @@ public class Knight extends Piece {
             int row = this.row + rowMove;
             int column = this.column + columnMove;
 
-            Piece piece = chessboardGenerator.getPiece(row, column);
+            Piece piece = chessboard.getPiece(row, column);
 
             // add move to an array if is legal
             if(row >= 0 && row <= Main.rows - 1 && column >= 0 && column <= Main.columns - 1 && MoveHandler.isValid(this, piece))

@@ -1,6 +1,6 @@
 package chessboard.pieces;
 
-import chessboard.ChessboardGenerator;
+import chessboard.Chessboard;
 import utils.Move;
 
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ public class Bishop extends Piece {
     public static final String name = "bishop";
     private static final String filename = "";
 
-    public Bishop(int row, int column, Piece.Colors color, ChessboardGenerator chessboardGenerator) {
-        super(row, column, name, filename, power, color, chessboardGenerator);
+    public Bishop(int row, int column, Piece.Colors color, Chessboard chessboard) {
+        super(row, column, name, filename, power, color, chessboard);
     }
 
     public List<Move> getPossibleMoves(){
