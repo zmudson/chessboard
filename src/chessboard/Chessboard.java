@@ -24,14 +24,12 @@ public class Chessboard {
 
     private final double width;
     private final double height;
+    private final double fieldWidth;
+    private final double fieldHeight;
     private final int rows;
     private final int columns;
 
-    public Parent getRoot() {
-        return root;
-    }
-
-    private Parent root;
+    private Group root;
     private Node[][] rectangles;
     private Node[][] circles;
     private ArrayList<Piece> pieces;
@@ -53,11 +51,13 @@ public class Chessboard {
     private King whiteKing = null;
     private King blackKing = null;
 
-    public Chessboard(double width, double height, int rows, int columns, Parent root) {
+    public Chessboard(double width, double height, int rows, int columns, Group root) {
         this.width = width;
         this.height = height;
         this.rows = rows;
         this.columns = columns;
+        this.fieldWidth = width / columns;
+        this.fieldHeight = height / rows;
         this.root = root;
        // this.pieces = pieces;
 
@@ -101,23 +101,21 @@ public class Chessboard {
 
     // create chessboard fields and color them
     public void generateChessboard(){
-        double rectangleWidth = width / columns;
-        double rectangleHeight = height / rows;
         for(int row = 0; row < rows; row++){
             for(int column = 0; column < columns; column++){
                 // init rectangle
                 Color color = (row + column) % 2 == 0 ? CHESSBOARD_WHITE_COLOR : CHESSBOARD_BLACK_COLOR;
-                double rectangleX = rectangleWidth * column;
-                double rectangleY = rectangleHeight * row;
-                Rectangle rectangle = new Rectangle(rectangleWidth, rectangleHeight, color);
+                double rectangleX = fieldWidth * column;
+                double rectangleY = fieldHeight * row;
+                Rectangle rectangle = new Rectangle(fieldWidth, fieldHeight, color);
                 rectangle.setX(rectangleX);
                 rectangle.setY(rectangleY);
 
                 // init circle
-                double circleX = rectangleX + rectangleWidth / 2;
-                double circleY = rectangleY + rectangleHeight / 2;
-                Circle circle = new Circle(circleX,circleY, Math.min(rectangleWidth, rectangleHeight) / 8, EventHandler.AVAILABLE_MOVE_COLOR);
-                circle.setOpacity(0.5);
+                double circleX = rectangleX + fieldWidth / 2;
+                double circleY = rectangleY + fieldHeight / 2;
+                Circle circle = new Circle(circleX,circleY, Math.min(fieldWidth, fieldHeight) / 8, EventHandler.AVAILABLE_MOVE_COLOR);
+//                circle.setOpacity(0.75);
                 circle.setVisible(false);
                 circle.setMouseTransparent(true);
 
@@ -470,6 +468,18 @@ public class Chessboard {
 
     public Node[][] getCircles(){
         return circles;
+    }
+
+    public double getFieldWidth() {
+        return fieldWidth;
+    }
+
+    public double getFieldHeight() {
+        return fieldHeight;
+    }
+
+    public Group getRoot() {
+        return root;
     }
 
 }

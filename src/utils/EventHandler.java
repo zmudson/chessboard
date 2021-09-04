@@ -3,12 +3,12 @@ package utils;
 import chessboard.Chessboard;
 import chessboard.Main;
 import chessboard.pieces.Piece;
+import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
@@ -19,7 +19,7 @@ public class EventHandler {
 
     // focused field color
     public static Color CLICKED_COLOR = Color.web("#f7d64f");
-    public static Color AVAILABLE_MOVE_COLOR = Color.web("#b4d64f");
+    public static Color AVAILABLE_MOVE_COLOR = Color.web("#646e40");
     public static Color MOVED_FROM_COLOR = Color.web("#f08330");
     public static Color MOVED_TO_COLOR = Color.web("#5c95f7");
 
@@ -41,6 +41,7 @@ public class EventHandler {
     private boolean focusedOnPiece = false;
     private Piece currentPiece = null;
     private List<Move> focusedPieceMoves = new ArrayList<>();
+    private List<Group> captureMarks = new ArrayList<>();
     private Rectangle lastMovedFromField = null;
     private Rectangle lastMovedToField = null;
 
@@ -90,15 +91,17 @@ public class EventHandler {
                             focusedPieceMoves = moves;
                             for(Move move : moves) {
                                 Position position = move.getEndPosition();
-//                                Rectangle rect = (Rectangle) rectangles[position.getRow()][position.getColumn()];
-//                                rect.setFill(AVAILABLE_MOVE_COLOR);
-                                circles[position.getRow()][position.getColumn()].setVisible(true);
+                                if(chessboard.getPiece(position.getRow(), position.getColumn()) == null)
+                                    circles[position.getRow()][position.getColumn()].setVisible(true);
+                                else{
+                                    handleCaptureMark(position);
+                                }
+
                             }
 
 
                         }
                     }
-                    // isFocused == true
                     else {
                         // handling piece move
                         boolean legalMove = false;
@@ -115,9 +118,12 @@ public class EventHandler {
                         chessboard.colorField(lastClicked, lastColor);
                         for(Move move : focusedPieceMoves) {
                             Position position = move.getEndPosition();
-//                            Color color = getFieldColor(position.getRow(),position.getColumn());
-//                            chessboard.colorField(position.getRow(), position.getColumn(), color);
-                            circles[position.getRow()][position.getColumn()].setVisible(false);
+                            if (chessboard.getPiece(position.getRow(), position.getColumn()) == null)
+                                circles[position.getRow()][position.getColumn()].setVisible(false);
+                        }
+                        // reset capture marks
+                        for (Group captureMark : captureMarks){
+                            chessboard.getRoot().getChildren().remove(captureMark);
                         }
                         //make sure that last colors are showed
                         if(lastMovedToField!=null) {
@@ -129,6 +135,9 @@ public class EventHandler {
                         if(legalMove) {
 
                             // make turn
+                            for(Move move : currentPiece.getPossibleMoves()){
+                                System.out.println(move.getEndPosition().getRow() + ", " + move.getEndPosition().getColumn());
+                            }
                             chessboard.play(row, column, currentPiece);
                             sound();
 
@@ -167,8 +176,27 @@ public class EventHandler {
         mediaPlayer.play();
     }
 
-    private void showAvailableMoves(){
-
+    private void handleCaptureMark(Position position){
+        Group captureMark = new Group();
+        double fieldWidth = chessboard.getFieldWidth();
+        double fieldHeight = chessboard.getFieldHeight();
+        double x = position.getColumn() * fieldWidth;
+        double y = position.getRow() * fieldHeight;
+        double triangleWidth = fieldWidth / 4;
+        double triangleHeight = fieldHeight / 4;
+        captureMark.setLayoutX(x);
+        captureMark.setLayoutY(y);
+        Polygon leftTopTriangle = new Polygon(0,0,triangleWidth,0,0, triangleHeight);
+        Polygon leftBottomTriangle = new Polygon(0,fieldHeight - triangleHeight,0,fieldHeight,triangleWidth,fieldHeight);
+        Polygon rightTopTriangle = new Polygon(fieldWidth - triangleWidth,0,fieldWidth,0,fieldWidth,triangleHeight);
+        Polygon rightBottomTriangle = new Polygon(fieldWidth,fieldHeight - triangleHeight, fieldWidth - triangleWidth,fieldHeight,fieldWidth,fieldHeight);
+        Polygon[] triangles = {leftTopTriangle, leftBottomTriangle, rightTopTriangle, rightBottomTriangle};
+        for (Polygon triangle : triangles){
+            triangle.setFill(AVAILABLE_MOVE_COLOR);
+            captureMark.getChildren().add(triangle);
+        }
+        captureMarks.add(captureMark);
+        chessboard.getRoot().getChildren().add(captureMark);
     }
 
 }
