@@ -482,5 +482,12 @@ public class Chessboard {
         return root;
     }
 
+    public King getWhiteKing() {
+        return whiteKing;
+    }
+
+    public King getBlackKing(){
+        return blackKing;
+    }
 }
 

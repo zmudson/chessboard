@@ -2,6 +2,7 @@ package utils;
 
 import chessboard.Chessboard;
 import chessboard.Main;
+import chessboard.pieces.King;
 import chessboard.pieces.Piece;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -20,6 +21,7 @@ public class EventHandler {
     // focused field color
     public static Color CLICKED_COLOR = Color.web("#f7d64f");
     public static Color AVAILABLE_MOVE_COLOR = Color.web("#646e40");
+    public static Color CHECK_COLOR = Color.web("#F33E42");
     public static Color MOVED_FROM_COLOR = Color.web("#f08330");
     public static Color MOVED_TO_COLOR = Color.web("#5c95f7");
 
@@ -42,8 +44,9 @@ public class EventHandler {
     private Piece currentPiece = null;
     private List<Move> focusedPieceMoves = new ArrayList<>();
     private List<Group> captureMarks = new ArrayList<>();
-    private Rectangle lastMovedFromField = null;
-    private Rectangle lastMovedToField = null;
+    private Rectangle checkField;
+    private Rectangle lastMovedFromField;
+    private Rectangle lastMovedToField;
 
     private final Chessboard chessboard;
 
@@ -139,12 +142,23 @@ public class EventHandler {
                                 System.out.println(move.getEndPosition().getRow() + ", " + move.getEndPosition().getColumn());
                             }
                             chessboard.play(row, column, currentPiece);
+                            // reset check mark
+                            if(checkField != null){
+                                King king = Piece.Colors.WHITE == chessboard.getColorToMove() ? chessboard.getBlackKing() : chessboard.getWhiteKing();
+                                checkField.setFill(getFieldColor(king.getRow(), king.getColumn()));
+                                checkField = null;
+                            }
+                            // handle check mark
+                            if(chessboard.isCheck()){
+                                King king = chessboard.getColorToMove() == Piece.Colors.WHITE ? chessboard.getWhiteKing() : chessboard.getBlackKing();
+                                handleCheckMark(king.getPosition());
+                            }
                             sound();
 
                             //uncolor last moved fields
                             if(lastMovedToField!=null) {
-                                lastMovedFromField.setFill(getFieldColor((int)(lastMovedFromField.getX()*8/Main.width), (int)(lastMovedFromField.getY()*8/Main.width)));
-                                lastMovedToField.setFill(getFieldColor((int)(lastMovedToField.getX()*8/Main.width), (int)(lastMovedToField.getY()*8/Main.width)));
+                                lastMovedFromField.setFill(getFieldColor((int)(lastMovedFromField.getX()*Main.columns/Main.width), (int)(lastMovedFromField.getY()*Main.rows/Main.height)));
+                                lastMovedToField.setFill(getFieldColor((int)(lastMovedToField.getX()*Main.columns/Main.width), (int)(lastMovedToField.getY()*Main.rows/Main.height)));
                             }
                             //color this move
                             chessboard.colorField(lastClicked, MOVED_FROM_COLOR);
@@ -197,6 +211,11 @@ public class EventHandler {
         }
         captureMarks.add(captureMark);
         chessboard.getRoot().getChildren().add(captureMark);
+    }
+
+    private void handleCheckMark(Position position){
+        checkField = (Rectangle) chessboard.getRectangles()[position.getRow()][position.getColumn()];
+        checkField.setFill(CHECK_COLOR);
     }
 
 }

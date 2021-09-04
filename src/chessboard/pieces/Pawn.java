@@ -140,7 +140,7 @@ public class Pawn extends Piece {
     }
 
     private boolean isEnPassantPinned(Directions direction){
-        boolean add = false;
+        boolean isPinned = false;
         Piece king = null;
         Piece enemy = null;
 
@@ -155,8 +155,6 @@ public class Pawn extends Piece {
                     king = currentPiece;
                 else if(currentPiece instanceof Queen || currentPiece instanceof Rook)
                     enemy = currentPiece;
-                else
-                    add = true;
                 break;
             }
         }
@@ -168,13 +166,13 @@ public class Pawn extends Piece {
                 Piece currentPiece = chessboard.getPiece(row, column);
                 if(currentPiece != null){
                     if(king != null && (currentPiece instanceof Queen || currentPiece instanceof Rook))
-                        add = false;
-                    else add = enemy == null || !(currentPiece instanceof King);
+                        isPinned = true;
+                    else isPinned = enemy != null || currentPiece instanceof King;
                     break;
                 }
             }
         }
-        return add;
+        return isPinned;
     }
 
     public boolean isPossibleToBeCapturedByEnPassant() {
