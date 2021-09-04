@@ -2,7 +2,6 @@ package chessboard;
 
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -19,7 +18,7 @@ public class Main extends Application {
     public static final int columns = 8;
 
     private Stage stage;
-    private Parent root;
+    private Group root;
     private Scene scene;
 
     private EventHandler eventHandler;

@@ -107,12 +107,12 @@ public class Pawn extends Piece {
 
                 //left
                 if(leftPiece instanceof Pawn && ((Pawn) leftPiece).isPossibleToBeCapturedByEnPassant()) {
-                    if(isEnPassantPinned(Directions.LEFT))
+                    if(!isEnPassantPinned(Directions.LEFT))
                         possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
                 }
                 //right
                 else if(rightPiece instanceof Pawn && ((Pawn) rightPiece).isPossibleToBeCapturedByEnPassant()) {
-                    if(isEnPassantPinned(Directions.RIGHT))
+                    if(!isEnPassantPinned(Directions.RIGHT))
                         possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
                 }
             }
@@ -129,9 +129,9 @@ public class Pawn extends Piece {
                 possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
             }
         }else{
-            if(column - 1 >= 0)
+            if(column - 1 >= 0 && MoveHandler.isValid(this, chessboard.getPiece(row + direction, column - 1)))
                 possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column - 1)));
-            if(column + 1 <= Main.rows - 1)
+            if(column + 1 <= Main.rows - 1 && MoveHandler.isValid(this, chessboard.getPiece(row + direction, column + 1)))
                 possibleMoves.add(new Move(this, getPosition(), new Position(row + direction, column + 1)));
         }
 
