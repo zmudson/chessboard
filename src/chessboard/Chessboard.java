@@ -1,6 +1,8 @@
 package chessboard;
 
 import chessboard.pieces.*;
+import javafx.animation.FadeTransition;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,6 +11,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import utils.EventHandler;
 import utils.ImageGenerator;
 import utils.MoveGenerator;
@@ -474,8 +477,10 @@ public class Chessboard {
         for(Rectangle rectangle : rectangles){
             rectangle.setWidth(fieldWidth);
             rectangle.setHeight(fieldHeight);
-            rectangle.setFill(Color.web("#939393"));
+            rectangle.setFill(Color.web("#ffffff"));
+            rectangle.setCursor(Cursor.HAND);
             popup.getChildren().add(rectangle);
+
             Piece piece = switch (rectangle.getId()) {
                 case "queen" -> new Queen(row, column, color, this);
                 case "rook" -> new Rook(row + 1, column, color, this);
@@ -485,6 +490,8 @@ public class Chessboard {
             };
             promotionPieces.add(piece);
             if(piece != null){
+                if(row == rows - 1)
+                    piece.setRow(piece.getRow() - rectangles.length + 1);
                 handleImageDraw(piece);
                 rectangle.setOnMouseClicked(event ->{
                     pieces.add(piece);
@@ -510,6 +517,19 @@ public class Chessboard {
                     eventHandler.sound();
                     root.getChildren().remove(popup);
                 });
+                ImageView imageView = piece.getImage();
+                final FadeTransition fadeIn = new FadeTransition(Duration.millis(100));
+                fadeIn.setNode(imageView);
+                fadeIn.setToValue(1);
+                rectangle.setOnMouseEntered(event -> fadeIn.playFromStart());
+
+                final FadeTransition fadeOut = new FadeTransition(Duration.millis(100));
+                fadeOut.setNode(imageView);
+                fadeOut.setToValue(0.5);
+                rectangle.setOnMouseExited(event -> fadeOut.playFromStart());
+
+//                rectangle.setOpacity(0.5);
+                imageView.setOpacity(0.5);
             }
         }
         popup.setLayoutX(column * fieldWidth);
