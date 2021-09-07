@@ -57,5 +57,6 @@ public class Main extends Application {
     private void initHandlerEvents() {
         eventHandler = new EventHandler(columns, rows, chessboard);
         eventHandler.setUpFieldsEvents(chessboard.getRectangles(), chessboard.getCircles());
+        chessboard.setEventHandler(eventHandler);
     }
 }
