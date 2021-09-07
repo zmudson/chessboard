@@ -183,7 +183,7 @@ public class EventHandler {
         return  (row + column) % 2 == 0 ? Chessboard.CHESSBOARD_WHITE_COLOR : Chessboard.CHESSBOARD_BLACK_COLOR;
     }
 
-    private void sound(){
+    public void sound(){
         File file = new File(Main.moveSoundEffectFilename);
         Media media = new Media(file.toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -213,7 +213,7 @@ public class EventHandler {
         chessboard.getRoot().getChildren().add(captureMark);
     }
 
-    private void handleCheckMark(Position position){
+    public void handleCheckMark(Position position){
         checkField = (Rectangle) chessboard.getRectangles()[position.getRow()][position.getColumn()];
         checkField.setFill(CHECK_COLOR);
     }

@@ -48,8 +48,6 @@ public class Pawn extends Piece {
             }
         }
 
-        List<Piece> pieces = chessboard.getPieces();
-
         Piece piece = chessboard.getPiece(row, column);
 
         if (piece != null)
@@ -65,14 +63,16 @@ public class Pawn extends Piece {
             // remove pawn from chessboard
             capture(this);
 
-            // add queen to chessboard
-            Piece queen = new Queen(row, column, color, chessboard);
-            pieces.add(queen);
-            if(color == Colors.WHITE)
-                chessboard.getWhitePieces().add(queen);
-            else if(color == Colors.BLACK)
-                chessboard.getBlackPieces().add(queen);
-            chessboard.handleImageDraw(queen);
+//            // add queen to chessboard
+//            Piece queen = new Queen(row, column, color, chessboard);
+//            pieces.add(queen);
+//            if(color == Colors.WHITE)
+//                chessboard.getWhitePieces().add(queen);
+//            else if(color == Colors.BLACK)
+//                chessboard.getBlackPieces().add(queen);
+//            chessboard.handleImageDraw(queen);
+            //
+            chessboard.handlePawnPromotion(row, column, color);
         }
     }
 

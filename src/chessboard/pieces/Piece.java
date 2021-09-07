@@ -267,4 +267,8 @@ public abstract class Piece {
         return chessboard;
     }
 
+    public void setRow(int row){
+        this.row = row;
+    }
+
 }

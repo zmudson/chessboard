@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -30,6 +31,7 @@ public class Chessboard {
     private final int columns;
 
     private Group root;
+    private EventHandler eventHandler;
     private Node[][] rectangles;
     private Node[][] circles;
     private ArrayList<Piece> pieces;
@@ -168,7 +170,7 @@ public class Chessboard {
         imageView.setMouseTransparent(true);
 
         // add imageView to root
-        ((Group) root).getChildren().add(imageView);
+        root.getChildren().add(imageView);
     }
 
     // set pieces on their position on chessboard
@@ -450,6 +452,86 @@ public class Chessboard {
         }
     }
 
+    public void handlePawnPromotion(int row, int column, Piece.Colors color){
+        // only promotion popup can be clicked
+        disableFieldsEvents();
+
+        // create and init popup and his child nodes
+        FlowPane popup = new FlowPane();
+        popup.setMaxWidth(fieldWidth);
+        root.getChildren().add(popup);
+
+        Rectangle queenRectangle = new Rectangle();
+        queenRectangle.setId("queen");
+        Rectangle rookRectangle = new Rectangle();
+        rookRectangle.setId("rook");
+        Rectangle knightRectangle = new Rectangle();
+        knightRectangle.setId("knight");
+        Rectangle bishopRectangle = new Rectangle();
+        bishopRectangle.setId("bishop");
+        Rectangle[] rectangles = {queenRectangle, rookRectangle, knightRectangle, bishopRectangle};
+        ArrayList<Piece> promotionPieces = new ArrayList<>(rectangles.length);
+        for(Rectangle rectangle : rectangles){
+            rectangle.setWidth(fieldWidth);
+            rectangle.setHeight(fieldHeight);
+            rectangle.setFill(Color.web("#939393"));
+            popup.getChildren().add(rectangle);
+            Piece piece = switch (rectangle.getId()) {
+                case "queen" -> new Queen(row, column, color, this);
+                case "rook" -> new Rook(row + 1, column, color, this);
+                case "knight" -> new Knight(row + 2, column, color, this);
+                case "bishop" -> new Bishop(row + 3, column, color, this);
+                default -> null;
+            };
+            promotionPieces.add(piece);
+            if(piece != null){
+                handleImageDraw(piece);
+                rectangle.setOnMouseClicked(event ->{
+                    pieces.add(piece);
+                    if(color == Piece.Colors.WHITE)
+                        whitePieces.add(piece);
+                    else
+                        blackPieces.add(piece);
+                    for(Piece promotionPiece : promotionPieces){
+                        root.getChildren().remove(promotionPiece.getImage());
+                    }
+                    piece.setRow(row);
+                    handleImageDraw(piece);
+
+                    unpinAndResetAllDirections();
+                    checkAllPinsAndChecks();
+                    
+                    // handle check mark
+                    if(isCheck){
+                        King king = colorToMove == Piece.Colors.WHITE ? whiteKing : blackKing;
+                        eventHandler.handleCheckMark(king.getPosition());
+                    }
+                    enableFieldsEvents();
+                    eventHandler.sound();
+                    root.getChildren().remove(popup);
+                });
+            }
+        }
+        popup.setLayoutX(column * fieldWidth);
+        popup.setLayoutY(row == 0 ? 0 : height - fieldHeight * rectangles.length);
+    }
+
+    private void enableFieldsEvents(){
+        for(int row = 0; row < rows; row++){
+            for(int column = 0; column < columns; column++){
+                rectangles[row][column].setMouseTransparent(false);
+            }
+        }
+    }
+
+    private void disableFieldsEvents(){
+        for(int row = 0; row < rows; row++){
+            for(int column = 0; column < columns; column++){
+                rectangles[row][column].setMouseTransparent(true);
+            }
+        }
+    }
+
     public MoveGenerator getMoveGenerator() {
         return moveGenerator;
     }
@@ -488,6 +570,10 @@ public class Chessboard {
 
     public King getBlackKing(){
         return blackKing;
+    }
+
+    public void setEventHandler(EventHandler eventHandler){
+        this.eventHandler = eventHandler;
     }
 }
 
